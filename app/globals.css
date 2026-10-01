@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Tokens ────────────────────────────────────────────────────────────
+   RGB triplets so Tailwind can apply opacity (bg-brand/10). The rail is the
+   dark sidebar, which stays dark in both themes. The accent is used sparingly:
+   the active nav marker, the score ring, the one thing on a page that says
+   "this is money". */
+:root{
+  --page: 246 245 240;
+  --page-alt: 239 237 230;
+  --surface: 255 255 255;
+  --sunken: 250 249 245;
+  --ink: 17 20 18;
+  --muted: 94 101 95;
+  --faint: 146 152 147;
+  --line: 230 228 220;
+  --line-strong: 208 205 195;
+  --brand: 21 94 63;
+  --brand-ink: 255 255 255;
+  --accent: 200 240 76;
+  --accent-ink: 22 32 8;
+  --rail: 13 19 16;
+  --rail-ink: 236 240 234;
+  --rail-muted: 136 148 140;
+  --rail-line: 32 41 36;
+  --success: 22 128 78;
+  --warning: 196 122 12;
+  --danger: 200 55 45;
+  --info: 36 104 196;
+  --shadow: 20 28 22;
+  /* Pipeline stages — one hue each, used as a dot, a tinted pill and a column rule. */
+  --st-new: #8A938C;
+  --st-research: #2F80C9;
+  --st-contacted: #5B5BD6;
+  --st-replied: #C98A12;
+  --st-meeting: #9A4FD0;
+  --st-proposal: #D2632A;
+  --st-won: #1E8E5A;
+  --st-lost: #C4453B;
+  color-scheme: light;
+}
+
+[data-theme="dark"]{
+  --page: 10 13 11;
+  --page-alt: 17 21 19;
+  --surface: 19 24 21;
+  --sunken: 14 18 16;
+  --ink: 236 240 234;
+  --muted: 160 169 162;
+  --faint: 112 121 114;
+  --line: 36 44 39;
+  --line-strong: 54 64 58;
+  --brand: 110 214 158;
+  --brand-ink: 8 22 14;
+  --accent: 200 240 76;
+  --accent-ink: 22 32 8;
+  --rail: 8 11 9;
+  --rail-ink: 236 240 234;
+  --rail-muted: 128 140 132;
+  --rail-line: 28 35 31;
+  --success: 88 200 138;
+  --warning: 240 176 64;
+  --danger: 244 110 98;
+  --info: 110 164 244;
+  --shadow: 0 0 0;
+  color-scheme: dark;
+}
+
+@layer base{
+  *,*::before,*::after{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:rgb(var(--page));
+    color:rgb(var(--ink));
+    font-family:'Instrument Sans',Inter,system-ui,-apple-system,sans-serif;
+    font-size:14px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  h1,h2,h3,h4{margin:0;font-weight:500}
+  p{margin:0}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;cursor:pointer}
+  :focus-visible{outline:2px solid rgb(var(--brand));outline-offset:2px;border-radius:4px}
+  ::selection{background:rgb(var(--accent));color:rgb(var(--accent-ink))}
+  input[type="date"]::-webkit-calendar-picker-indicator{opacity:.55;cursor:pointer}
+  [data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(1)}
+}
+
+@layer components{
+  .display{font-family:Fraunces,'Iowan Old Style',Georgia,serif;font-variation-settings:'SOFT' 50,'opsz' 96;letter-spacing:-.02em;line-height:1.08;font-weight:400}
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:rgb(var(--muted))}
+  .num{font-variant-numeric:tabular-nums}
+  .card{background:rgb(var(--surface));border:1px solid rgb(var(--line));border-radius:14px}
+  .hairline{border-color:rgb(var(--line))}
+  .scroll-thin{scrollbar-width:thin;scrollbar-color:rgb(var(--line-strong)) transparent}
+  .skeleton{background:linear-gradient(90deg,rgb(var(--page-alt)) 0%,rgb(var(--line)) 50%,rgb(var(--page-alt)) 100%);background-size:200% 100%;animation:shimmer 1.6s linear infinite;border-radius:6px}
+  .select-chevron{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:14px}
+  .grain{background-image:radial-gradient(rgb(var(--ink) / .045) 1px,transparent 1px);background-size:14px 14px}
+}
+
+@keyframes shimmer{from{background-position:-200% 0}to{background-position:200% 0}}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;animation-iteration-count:1!important;
+    transition-duration:.01ms!important;scroll-behavior:auto!important;
+  }
+}
+
+@media print{
+  html,body{background:#fff!important}
+  .break-inside-avoid{break-inside:avoid}
+}

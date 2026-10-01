@@ -1,0 +1,29 @@
+{
+  "checkedAt": "2026-09-30",
+  "business": { "name": "G Builders NYC", "domain": "gbuilders.com", "url": "https://gbuilders.com" },
+  "grade": "D",
+  "summary": "We found 5 things that could be costing G Builders NYC customers, and 3 that are working well.",
+  "checksTotal": 8,
+  "issues": [
+    { "title": "Not built for phones", "impact": "high", "why": "Most visitors arrive on a phone. Text is tiny and buttons are hard to tap, so many leave before reading anything.", "fix": "Rebuild the layout mobile-first, so text, buttons and forms fit any screen." },
+    { "title": "Looks unmaintained (© 2024)", "impact": "high", "why": "An old year in the footer makes the business look inactive.", "fix": "Update the content and set the year to update itself." },
+    { "title": "No way to enquire on the page", "impact": "high", "why": "Interested visitors have no quick way to reach you, so many don’t.", "fix": "Add a short enquiry form, a WhatsApp button and a clear call to action on every page." },
+    { "title": "No search description", "impact": "medium", "why": "Google picks random text to show under your name in results.", "fix": "Write a short description that says what you do and why people should choose you." },
+    { "title": "No analytics", "impact": "low", "why": "There’s no way to know how many people visit or where they come from.", "fix": "Install privacy-friendly analytics so you can see what’s working." }
+  ],
+  "wins": [
+    { "title": "Website loads", "detail": "The site responds" },
+    { "title": "Secure connection", "detail": "Padlock shown in the browser" },
+    { "title": "Loads quickly", "detail": "Homepage in about 2.8s" }
+  ],
+  "recommendations": [
+    { "title": "A portfolio site that wins tenders", "detail": "Project pages with photos, scope and results that answer a buyer’s questions before the call." },
+    { "title": "Off-plan sales pages with payment plans", "detail": "One page per development, with floor plans, pricing and a way to reserve." },
+    { "title": "Client progress portal with photo updates", "detail": "Clients see their build move forward without chasing you for updates." }
+  ],
+  "preparer": { "name": "Diwe Innocent", "role": "Kymaa · kymaa.tech", "photo": "" },
+  "cta": {
+    "primary": { "label": "Talk to me about it", "url": "https://wa.me/2347068884102?text=Hi%20Diwe%2C%20I%20just%20read%20my%20website%20check." },
+    "secondary": { "label": "Book a free call", "url": "https://kymaa.tech/contact/" }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "number": "KYM-2026-014",
+  "issuedAt": "2026-09-30",
+  "dueAt": "2026-10-14",
+  "reference": "Website redesign",
+  "status": "auto",
+  "currency": "NGN",
+  "locale": "en-NG",
+  "from": {
+    "name": "Kymaa",
+    "legalName": "Kymaa Digital Solutions",
+    "email": "solutions@kymaa.online",
+    "phone": "+234 706 888 4102",
+    "address": ["Lagos, Nigeria"]
+  },
+  "client": {
+    "name": "G Builders NYC",
+    "contact": "Attn: Project owner",
+    "email": "hello@gbuilders.com",
+    "address": ["New York, NY", "United States"]
+  },
+  "items": [
+    { "title": "Discovery & strategy", "detail": "Audit, competitor review, sitemap and content plan", "qty": 1, "rate": 150000 },
+    { "title": "Website design", "detail": "Mobile-first design for 6 pages and a design system", "qty": 1, "rate": 450000 },
+    { "title": "Development & CMS", "detail": "Build, CMS setup, enquiry form and WhatsApp integration", "qty": 1, "rate": 600000 },
+    { "title": "SEO setup", "detail": "Search descriptions, sitemap, analytics and Google Business Profile", "qty": 1, "rate": 120000 }
+  ],
+  "discount": { "label": "Early start", "type": "percent", "value": 5 },
+  "tax": { "label": "VAT", "rate": 7.5 },
+  "payments": [
+    { "label": "Deposit received", "date": "2026-09-30", "amount": 600000 }
+  ],
+  "payment": {
+    "bank": "[Bank name]",
+    "accountName": "Kymaa Digital Solutions",
+    "accountNumber": "[Account number]",
+    "link": ""
+  },
+  "terms": "50% deposit to begin, balance on launch.\nPayment within 14 days of the invoice date.",
+  "notes": "Includes 30 days of post-launch support."
+}

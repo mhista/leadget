@@ -1,0 +1,18 @@
+{
+  "name": "Kymaa — The Cut",
+  "color": {
+    "bone": "#F2F0EA", "paper": "#F7F5F0", "bone-2": "#E9E6DD", "bone-3": "#DDD9CE",
+    "ink": "#0B1726", "ink-2": "#4A5566",
+    "navy": "#00244E", "navy-2": "#0A3261",
+    "signal": "#0678FF", "signal-text": "#0060DF",
+    "sky": "#5AA8FF", "mist": "#9DB0C8",
+    "ember": "#C2410C", "amber": "#9A6700"
+  },
+  "font": {
+    "display": { "family": "Archivo", "stretch": "112%", "weight": 500, "letterSpacing": "-0.04em", "file": "fonts/archivo-wdth.woff2" },
+    "accent":  { "family": "Instrument Serif", "style": "italic", "file": "fonts/instrument-serif-italic.woff2" },
+    "body":    { "family": "Geist", "file": "fonts/geist.woff2" },
+    "label":   { "family": "Geist Mono", "size": "11–12px", "transform": "uppercase", "letterSpacing": "0.12em", "file": "fonts/geist-mono.woff2" }
+  },
+  "shape": { "cutCorner": "45°, 28px on large blocks, 12–14px on buttons", "marker": "blue right-angle triangle before section labels" }
+}

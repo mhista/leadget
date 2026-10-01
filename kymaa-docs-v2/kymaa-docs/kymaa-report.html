@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Website check — Kymaa</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,100..900&family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@1&display=swap">
+<!--
+  KYMAA WEBSITE CHECK — report template
+  ─────────────────────────────────────
+  This file is a complete, self-contained template. To produce a report:
+    1. Replace the JSON inside <script id="report-data"> (schema in README.md).
+    2. Open / serve the file. The small script at the bottom renders everything.
+  Nothing else needs editing. Print (Ctrl/Cmd+P → Save as PDF) gives a clean A4.
+-->
+<style>
+  :root {
+    --bone: #F2F0EA; --paper: #F7F5F0; --bone-2: #E9E6DD; --bone-3: #DDD9CE;
+    --ink: #0B1726; --ink-2: #4A5566; --navy: #00244E; --navy-2: #0A3261;
+    --signal: #0678FF; --signal-text: #0060DF; --sky: #5AA8FF; --mist: #9DB0C8;
+    --ember: #C2410C; --amber: #9A6700;
+    --rule: rgba(11, 23, 38, .14);
+    --f-disp: 'Archivo', 'Arial Narrow', system-ui, sans-serif;
+    --f-serif: 'Instrument Serif', Georgia, serif;
+    --f-body: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --f-mono: 'Geist Mono', ui-monospace, Menlo, monospace;
+    --pad: clamp(22px, 5.5vw, 56px);
+    --cut: 28px;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bone-2); color: var(--ink); font: 400 16px/1.6 var(--f-body); -webkit-font-smoothing: antialiased; }
+  h1, h2, h3, p, ol, ul, dl, dd { margin: 0; }
+  a { color: inherit; }
+
+  .disp { font-family: var(--f-disp); font-stretch: 112%; font-weight: 500; letter-spacing: -0.04em; line-height: .95; }
+  .serif { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
+  .mono { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; font-weight: 500; line-height: 1.5; }
+  .marker { display: inline-flex; align-items: center; gap: 10px; }
+  .marker::before { content: ''; width: 9px; height: 9px; flex: none; background: var(--signal); clip-path: polygon(0 0, 100% 0, 0 100%); }
+  .on-dark .marker::before { background: var(--sky); }
+
+  .sheet { max-width: 880px; margin: clamp(0px, 4vw, 48px) auto; background: var(--paper); box-shadow: 0 1px 0 var(--rule), 0 30px 60px -30px rgba(11,23,38,.25); }
+
+  /* ── cover ─────────────────────────────────────────── */
+  .cover { position: relative; overflow: hidden; background: var(--navy); color: var(--bone); padding: var(--pad); padding-bottom: calc(var(--pad) * .8); }
+  .cover::after { content: ''; position: absolute; top: -20%; right: -18%; width: 34%; height: 150%; background: var(--signal); transform: skewX(-45deg); transform-origin: top right; opacity: .95; }
+  .cover > * { position: relative; z-index: 1; }
+  .top { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  .logo { height: 22px; width: auto; color: var(--bone); display: block; }
+  .top .mono { color: var(--mist); }
+  .for { margin-top: clamp(40px, 7vw, 64px); color: var(--mist); }
+  .biz { margin-top: 14px; font-size: clamp(40px, 8vw, 72px); max-width: 13ch; overflow-wrap: anywhere; }
+  .domain { display: inline-block; margin-top: 16px; color: var(--sky); text-decoration: none; border-bottom: 1px solid rgba(90,168,255,.45); padding-bottom: 2px; font-size: 13px; letter-spacing: .08em; }
+
+  .verdict { margin-top: clamp(36px, 6vw, 56px); display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: center; padding-top: 28px; border-top: 1px solid rgba(242,240,234,.18); }
+  .grade { width: 112px; height: 112px; display: grid; place-items: center; color: #fff; font-family: var(--f-disp); font-stretch: 112%; font-weight: 600; font-size: 64px; letter-spacing: -0.04em; clip-path: polygon(22px 0, 100% 0, 100% 100%, 0 100%, 0 22px); }
+  .grade small { display: block; }
+  .v-title { font-size: clamp(26px, 4vw, 36px); }
+  .v-sum { margin-top: 10px; color: #C9D3E0; max-width: 46ch; }
+  .score { margin-top: 20px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .bar { display: flex; gap: 4px; }
+  .bar i { width: 26px; height: 6px; background: rgba(242,240,234,.22); }
+  .bar i.ok { background: var(--sky); }
+  .score .mono { color: var(--mist); }
+
+  /* ── body ──────────────────────────────────────────── */
+  .body { padding: var(--pad); }
+  section + section { margin-top: clamp(48px, 8vw, 72px); }
+  .label { display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid var(--rule); padding-top: 14px; }
+  .label > span:last-child { color: var(--ink-2); }
+  .h2 { margin: 22px 0 8px; font-size: clamp(30px, 5vw, 44px); }
+  .lede { color: var(--ink-2); max-width: 56ch; }
+
+  .issues { list-style: none; padding: 0; margin-top: 28px; border-top: 1px solid var(--ink); }
+  .issue { display: grid; grid-template-columns: 56px 1fr auto; gap: 0 18px; padding: 22px 0 24px; border-bottom: 1px solid var(--rule); break-inside: avoid; }
+  .n { font-family: var(--f-mono); font-size: 13px; color: var(--signal-text); padding-top: 3px; }
+  .i-title { font-size: 19px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.35; }
+  .i-why { margin-top: 6px; color: var(--ink-2); max-width: 58ch; }
+  .i-fix { margin-top: 12px; display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: baseline; }
+  .i-fix .mono { color: var(--signal-text); white-space: nowrap; }
+  .i-fix p { max-width: 58ch; }
+  .impact { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; padding-top: 3px; }
+  .impact::before { content: ''; width: 8px; height: 8px; background: currentColor; }
+  .impact.high { color: var(--ember); }
+  .impact.medium { color: var(--amber); }
+  .impact.low { color: var(--ink-2); }
+  .impact.low::before { background: transparent; box-shadow: inset 0 0 0 1.5px currentColor; }
+
+  .wins { list-style: none; padding: 0; margin-top: 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; border-top: 1px solid var(--ink); }
+  .win { display: grid; grid-template-columns: 22px 1fr; gap: 14px; padding: 18px 0; border-bottom: 1px solid var(--rule); break-inside: avoid; }
+  .tick { width: 22px; height: 22px; background: var(--navy); color: var(--bone); display: grid; place-items: center; margin-top: 1px; }
+  .w-title { font-weight: 600; }
+  .w-detail { color: var(--ink-2); font-size: 14.5px; }
+
+  /* ── plan / CTA ────────────────────────────────────── */
+  .plan { background: var(--navy); color: var(--bone); padding: clamp(28px, 5vw, 48px); clip-path: polygon(var(--cut) 0, 100% 0, 100% 100%, 0 100%, 0 var(--cut)); break-inside: avoid; }
+  .plan .label { border-color: rgba(242,240,234,.2); }
+  .plan .label > span:last-child { color: var(--mist); }
+  .plan .h2 { color: var(--bone); }
+  .recs { list-style: none; padding: 0; margin-top: 24px; counter-reset: r; }
+  .recs li { counter-increment: r; display: grid; grid-template-columns: 44px 1fr; padding: 16px 0; border-top: 1px solid rgba(242,240,234,.16); }
+  .recs li::before { content: counter(r, decimal-leading-zero); font-family: var(--f-mono); font-size: 12px; color: var(--sky); padding-top: 4px; }
+  .r-title { font-weight: 600; font-size: 17px; }
+  .r-detail { color: #C9D3E0; font-size: 14.5px; margin-top: 2px; }
+  .sign { margin-top: 28px; padding-top: 24px; border-top: 1px solid rgba(242,240,234,.2); display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .who { display: flex; align-items: center; gap: 14px; }
+  .who img { width: 52px; height: 52px; object-fit: cover; object-position: 50% 20%; clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px); background: var(--navy-2); }
+  .who b { display: block; font-weight: 600; }
+  .who span { color: var(--mist); font-size: 14px; }
+  .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 12px; min-height: 50px; padding: 0 22px 0 26px; font-weight: 500; font-size: 15px; text-decoration: none; background: var(--bone); color: var(--ink); clip-path: polygon(12px 0, 100% 0, 100% 100%, 0 100%, 0 12px); }
+  .btn:hover { background: #fff; }
+  .btn-line { background: transparent; color: var(--bone); box-shadow: inset 0 0 0 1px rgba(242,240,234,.5); clip-path: none; }
+  .btn-line:hover { background: rgba(242,240,234,.08); }
+  .btn:focus-visible { outline: 2px solid var(--sky); outline-offset: 3px; }
+
+  .foot { padding: 20px var(--pad) 28px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: var(--ink-2); border-top: 1px solid var(--rule); }
+  .foot a { text-decoration: none; }
+
+  [hidden] { display: none !important; }
+
+  @media (max-width: 640px) {
+    .sheet { margin: 0; }
+    .cover::after { width: 26%; right: -34%; top: -30%; }
+    .verdict { grid-template-columns: 1fr; gap: 20px; }
+    .grade { width: 88px; height: 88px; font-size: 50px; }
+    .issue { grid-template-columns: 36px 1fr; }
+    .impact { grid-column: 2; grid-row: 1; margin-bottom: 8px; }
+    .i-title { grid-column: 2; }
+    .issue > div { grid-column: 2; }
+    .wins { grid-template-columns: 1fr; }
+    .i-fix { grid-template-columns: 1fr; gap: 2px; }
+    .btn { flex: 1 1 100%; justify-content: space-between; }
+  }
+
+  @page { size: A4; margin: 0; }
+  @media print {
+    body { background: var(--paper); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .sheet { margin: 0; max-width: none; box-shadow: none; }
+    .btn { box-shadow: none; }
+    .plan { clip-path: none; }
+  }
+</style>
+</head>
+<body>
+
+<article class="sheet" aria-labelledby="biz">
+  <header class="cover on-dark">
+    <div class="top">
+      <svg class="logo" viewBox="0 0 1077 328" role="img" aria-label="Kymaa"><path fill="currentColor" d="M250.0 327.0C250.0 326.4 251.3 323.1 252.9 319.7C254.5 316.3 261.0 301.8 267.5 287.5C273.9 273.2 280.2 259.2 281.5 256.5C282.7 253.8 284.8 249.1 286.0 246.2L288.3 240.8L284.5 231.7C282.4 226.6 278.4 216.9 275.5 210.0C272.7 203.1 265.5 186.0 259.6 172.0C253.7 158.0 245.9 139.5 242.3 131.0C238.8 122.5 235.0 113.6 233.9 111.2C232.8 108.8 230.6 103.6 229.0 99.7C227.4 95.7 224.5 88.8 222.6 84.2L219.0 75.9L220.3 75.4C221.0 75.2 234.1 75.1 249.5 75.2L277.4 75.5L280.7 84.0C284.0 92.6 289.0 106.4 306.7 154.2C312.1 168.9 316.7 181.0 317.0 181.0C317.6 181.0 319.4 176.1 343.4 110.5C350.1 92.3 355.9 76.9 356.3 76.3L357.1 75.0L411.1 75.0L465.0 75.0L465.0 85.0L465.0 95.0L465.8 95.0C466.2 95.0 468.8 92.7 471.5 89.9L476.5 84.8L485.5 80.5L494.5 76.1L500.8 74.9L507.0 73.7L519.3 74.2L531.5 74.7L538.8 77.3C542.9 78.7 548.6 81.4 551.7 83.2L557.2 86.5L562.5 91.8C565.4 94.8 568.9 98.7 570.2 100.6C573.0 104.7 574.2 104.8 576.1 101.4C576.8 99.9 580.7 95.8 584.6 92.1L591.7 85.5L599.1 81.8C603.2 79.7 608.5 77.3 611.0 76.4L615.5 74.8L628.5 74.3L641.5 73.8L649.0 75.4L656.5 77.0L664.6 81.0L672.8 85.0L677.9 89.6C680.8 92.2 685.0 97.0 687.4 100.4L691.7 106.5L694.3 113.0C695.7 116.6 697.5 123.0 698.4 127.2L700.0 134.9L700.0 191.0L700.0 247.0L674.2 246.8L648.5 246.5L648.0 194.5L647.5 142.5L645.5 137.5L643.5 132.5L638.7 127.8L633.9 123.1L627.4 121.0L620.8 119.0L615.7 119.0L610.6 119.0L605.1 120.6L599.5 122.1L595.5 124.8L591.6 127.6L588.9 131.5C587.4 133.7 585.6 137.0 584.9 139.0L583.6 142.5L583.0 194.5L582.5 246.5L556.8 246.8L531.0 247.0L531.0 200.3L531.0 153.5L529.9 147.0C528.6 139.0 526.3 133.5 522.1 128.7L518.9 125.1L513.2 122.3L507.5 119.6L498.0 119.5L488.5 119.5L483.0 122.1C476.6 125.2 474.0 127.5 470.3 133.3L467.6 137.5L466.3 143.0L465.0 148.5L465.0 197.8L465.0 247.0L439.0 247.0L413.0 247.0L413.0 163.7L413.0 80.3L412.3 79.7L411.6 79.0L408.7 85.7C407.1 89.5 404.3 96.1 402.5 100.5C400.7 104.9 397.0 113.7 394.2 120.0C391.5 126.3 387.0 136.9 384.2 143.5C378.2 157.7 358.0 205.2 330.0 271.0C318.9 297.1 308.9 320.6 307.8 323.2L305.8 328.0L277.9 328.0L250.0 328.0L250.0 327.0ZM766.6 247.4L759.7 245.9L753.1 242.9C732.6 233.6 717.8 214.4 710.7 187.7L708.5 179.5L708.6 160.5L708.6 141.5L710.3 134.6C718.0 104.2 737.6 82.4 763.7 75.5L769.5 73.9L778.5 73.3L787.5 72.8L794.9 73.9L802.3 75.1L809.7 78.1L817.1 81.2L822.8 85.5L828.5 89.7L831.5 93.8C833.1 96.1 834.8 98.0 835.2 98.0L835.9 98.0L836.2 86.8L836.5 75.5L862.0 75.5L887.5 75.5L887.5 161.0L887.5 246.5L862.0 246.5L836.5 246.5L836.0 235.0L835.5 223.5L831.6 228.4L827.6 233.2L821.6 237.4C814.5 242.4 807.7 245.4 798.8 247.5L792.5 249.0L783.0 248.9L773.5 248.8L766.6 247.4ZM958.1 247.9C939.0 244.2 923.1 233.3 911.6 216.0L907.2 209.5L903.6 199.9L900.0 190.2L898.5 181.5L897.0 172.7L897.0 159.6L897.0 146.5L898.9 137.5L900.8 128.5L903.9 120.7L907.0 112.9L911.4 106.2C917.0 97.6 924.7 89.8 933.2 84.3L940.0 79.9L946.2 77.6C949.7 76.3 955.6 74.7 959.4 74.0L966.3 72.7L976.5 73.3L986.7 73.9L993.1 76.0C996.6 77.2 1002.1 79.6 1005.3 81.3L1011.2 84.4L1017.1 90.2C1020.3 93.5 1023.0 96.5 1023.0 97.1C1023.0 97.6 1023.4 98.0 1024.0 98.0L1024.9 98.0L1025.2 86.8L1025.5 75.5L1051.0 75.5L1076.5 75.5L1076.5 161.0L1076.5 246.5L1051.0 246.5L1025.5 246.5L1025.2 235.8L1024.9 225.0L1024.1 225.0C1023.6 225.0 1021.8 226.7 1020.2 228.8C1013.5 237.2 1000.1 244.8 987.1 247.6L980.5 249.0L971.5 248.9C966.5 248.8 960.5 248.4 958.1 247.9ZM96.5 211.0L69.5 184.0L93.5 160.0C106.7 146.8 117.9 136.0 118.5 136.0C119.1 136.0 142.1 158.6 169.8 186.3L220.1 236.6L219.4 237.3L218.7 238.0L171.1 238.0L123.6 238.0L96.5 211.0ZM0.0 171.7L0.0 123.4L61.8 61.7L123.5 0.0L171.2 0.0L218.9 0.0L219.4 0.8L219.9 1.6L110.6 110.8C50.5 170.9 1.1 220.0 0.7 220.0L0.0 220.0L0.0 171.7ZM814.1 199.6L819.5 196.9L823.3 193.2C830.2 186.6 833.1 180.4 835.0 168.1L836.1 161.8L835.1 154.5L834.0 147.2L832.0 141.6L829.9 136.0L825.0 130.7L820.2 125.4L814.4 122.6L808.7 119.8L801.0 119.3L793.3 118.7L786.6 121.0L779.9 123.2L774.1 128.6L768.3 133.9L765.5 140.1L762.8 146.3L761.7 153.1L760.6 160.0L761.7 167.9L762.7 175.7L765.3 181.3L767.9 186.9L772.6 192.1C777.6 197.4 780.8 199.4 787.5 201.7L791.5 203.0L800.1 202.6L808.7 202.3L814.1 199.6ZM1002.7 199.9L1007.5 197.5L1012.6 192.4L1017.8 187.3L1019.8 183.4C1020.8 181.3 1022.3 177.0 1023.1 174.0L1024.4 168.5L1024.4 160.5L1024.3 152.5L1022.6 146.5C1019.6 136.4 1014.5 129.4 1006.0 124.1L1001.5 121.2L996.1 120.0L990.8 118.7L984.1 119.3L977.5 119.8L972.8 121.8L968.1 123.9L963.4 128.2C955.3 135.6 951.5 143.8 950.4 156.1L949.7 162.7L950.9 169.6L952.1 176.5L955.0 182.5L957.9 188.5L961.1 191.8C965.5 196.4 971.3 200.1 976.8 201.7L981.5 203.0L989.7 202.6L997.8 202.2L1002.7 199.9Z"/><path fill="#0678FF" d="M0.2 44.1L0.5 0.5L43.0 0.2C66.4 0.1 86.6 0.2 87.9 0.5L90.4 1.1L89.0 2.0L87.6 2.9L86.6 2.3L85.7 1.7L86.4 2.8L87.1 3.9L45.0 45.8L3.0 87.7L1.5 87.7L-0.0 87.7L0.2 44.1Z"/></svg>
+      <span class="mono" data-f="headerLabel"></span>
+    </div>
+    <p class="mono marker for" data-f="preparedForLabel">Prepared for</p>
+    <h1 class="disp biz" id="biz" data-f="business.name"></h1>
+    <a class="mono domain" data-f="business.domain" data-href="business.url" target="_blank" rel="noopener"></a>
+
+    <div class="verdict">
+      <div class="grade" data-grade aria-label=""><span data-f="grade"></span></div>
+      <div>
+        <h2 class="disp v-title" data-f="verdict"></h2>
+        <p class="v-sum" data-f="summary"></p>
+        <div class="score">
+          <span class="bar" data-bar aria-hidden="true"></span>
+          <span class="mono" data-f="scoreText"></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="body">
+    <section aria-labelledby="fix-h">
+      <div class="label mono"><span class="marker">(01) / What to fix</span><span data-f="fixCount"></span></div>
+      <h2 class="disp h2" id="fix-h">What to <span class="serif">fix</span></h2>
+      <p class="lede">In order of how much each one is likely costing you.</p>
+      <ol class="issues" data-issues></ol>
+    </section>
+
+    <section aria-labelledby="win-h" data-wins-section>
+      <div class="label mono"><span class="marker">(02) / What’s working</span><span data-f="winCount"></span></div>
+      <h2 class="disp h2" id="win-h">What’s <span class="serif">working</span></h2>
+      <ul class="wins" data-wins></ul>
+    </section>
+
+    <section class="plan on-dark" aria-labelledby="plan-h">
+      <div class="label mono"><span class="marker">(03) / The plan</span><span>Kymaa</span></div>
+      <h2 class="disp h2" id="plan-h" data-f="planTitle"></h2>
+      <ol class="recs" data-recs></ol>
+      <div class="sign">
+        <div class="who">
+          <img data-photo alt="" hidden>
+          <div><b data-f="preparer.name"></b><span data-f="preparer.role"></span></div>
+        </div>
+        <div class="ctas">
+          <a class="btn" data-href="cta.primary.url" target="_blank" rel="noopener"><span data-f="cta.primary.label"></span> <span aria-hidden="true">→</span></a>
+          <a class="btn btn-line" data-href="cta.secondary.url" data-optional="cta.secondary" target="_blank" rel="noopener"><span data-f="cta.secondary.label"></span></a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="foot mono">
+    <span data-f="footnote"></span>
+    <a href="https://kymaa.tech" target="_blank" rel="noopener">kymaa.tech</a>
+  </footer>
+</article>
+
+<!-- ─────────────────────────────────────────────────────────────────────
+     REPORT DATA — replace this JSON. Schema: README.md → "Report data".
+     ───────────────────────────────────────────────────────────────────── -->
+<script type="application/json" id="report-data">
+{
+  "checkedAt": "2026-09-30",
+  "business": { "name": "G Builders NYC", "domain": "gbuilders.com", "url": "https://gbuilders.com" },
+  "grade": "D",
+  "summary": "We found 5 things that could be costing G Builders NYC customers, and 3 that are working well.",
+  "checksTotal": 8,
+  "issues": [
+    { "title": "Not built for phones", "impact": "high", "why": "Most visitors arrive on a phone. Text is tiny and buttons are hard to tap, so many leave before reading anything.", "fix": "Rebuild the layout mobile-first, so text, buttons and forms fit any screen." },
+    { "title": "Looks unmaintained (© 2024)", "impact": "high", "why": "An old year in the footer makes the business look inactive.", "fix": "Update the content and set the year to update itself." },
+    { "title": "No way to enquire on the page", "impact": "high", "why": "Interested visitors have no quick way to reach you, so many don’t.", "fix": "Add a short enquiry form, a WhatsApp button and a clear call to action on every page." },
+    { "title": "No search description", "impact": "medium", "why": "Google picks random text to show under your name in results.", "fix": "Write a short description that says what you do and why people should choose you." },
+    { "title": "No analytics", "impact": "low", "why": "There’s no way to know how many people visit or where they come from.", "fix": "Install privacy-friendly analytics so you can see what’s working." }
+  ],
+  "wins": [
+    { "title": "Website loads", "detail": "The site responds" },
+    { "title": "Secure connection", "detail": "Padlock shown in the browser" },
+    { "title": "Loads quickly", "detail": "Homepage in about 2.8s" }
+  ],
+  "recommendations": [
+    { "title": "A portfolio site that wins tenders", "detail": "Project pages with photos, scope and results that answer a buyer’s questions before the call." },
+    { "title": "Off-plan sales pages with payment plans", "detail": "One page per development, with floor plans, pricing and a way to reserve." },
+    { "title": "Client progress portal with photo updates", "detail": "Clients see their build move forward without chasing you for updates." }
+  ],
+  "preparer": { "name": "Diwe Innocent", "role": "Kymaa · kymaa.tech", "photo": "" },
+  "cta": {
+    "primary": { "label": "Talk to me about it", "url": "https://wa.me/2347068884102?text=Hi%20Diwe%2C%20I%20just%20read%20my%20website%20check." },
+    "secondary": { "label": "Book a free call", "url": "https://kymaa.tech/contact/" }
+  }
+}
+</script>
+
+<script>
+/* Renderer: reads #report-data and fills the page. No dependencies. */
+(function () {
+  var d = JSON.parse(document.getElementById('report-data').textContent);
+  var GRADES = {
+    A: { color: '#0678FF', verdict: 'In great shape' },
+    B: { color: '#0A3261', verdict: 'Solid, with gaps' },
+    C: { color: '#9A6700', verdict: 'Room to improve' },
+    D: { color: '#C2410C', verdict: 'Needs work' },
+    F: { color: '#9F1D1D', verdict: 'Needs urgent work' }
+  };
+  var IMPACT = { high: 'High impact', medium: 'Medium impact', low: 'Low impact' };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var get = function (path) { return path.split('.').reduce(function (o, k) { return o == null ? o : o[k]; }, v); };
+  var date = new Date((d.checkedAt || new Date().toISOString().slice(0, 10)) + 'T12:00:00');
+  var nice = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  var g = GRADES[String(d.grade || 'C').toUpperCase()] || GRADES.C;
+  var issues = d.issues || [], wins = d.wins || [];
+  var total = d.checksTotal || (issues.length + wins.length);
+  var name = (d.business && d.business.name) || 'your business';
+
+  var v = Object.assign({}, d, {
+    headerLabel: 'Website check · ' + nice,
+    preparedForLabel: 'Prepared for',
+    verdict: d.verdict || g.verdict,
+    scoreText: wins.length + ' of ' + total + ' checks passed',
+    fixCount: issues.length + (issues.length === 1 ? ' item' : ' items'),
+    winCount: wins.length + ' passing',
+    planTitle: d.planTitle || 'What I’d do for ' + name,
+    footnote: 'Checked on ' + nice + '. Results can vary between visits.'
+  });
+
+  document.title = 'Website check: ' + name + ' — Kymaa';
+  document.querySelectorAll('[data-f]').forEach(function (el) { var x = get(el.dataset.f); if (x != null) el.textContent = x; });
+  document.querySelectorAll('[data-href]').forEach(function (el) {
+    var opt = el.dataset.optional;
+    if (opt && !get(opt)) { el.hidden = true; return; }
+    var u = get(el.dataset.href); if (u) el.href = u; else el.removeAttribute('href');
+  });
+
+  var tile = document.querySelector('[data-grade]');
+  tile.style.background = g.color;
+  tile.setAttribute('aria-label', 'Grade ' + d.grade);
+
+  document.querySelector('[data-bar]').innerHTML = Array.from({ length: total }, function (_, i) { return '<i class="' + (i < wins.length ? 'ok' : '') + '"></i>'; }).join('');
+
+  document.querySelector('[data-issues]').innerHTML = issues.map(function (it, i) {
+    var imp = (it.impact || 'medium').toLowerCase();
+    return '<li class="issue"><span class="n">' + String(i + 1).padStart(2, '0') + '</span>' +
+      '<div><h3 class="i-title">' + esc(it.title) + '</h3>' +
+      (it.why ? '<p class="i-why">' + esc(it.why) + '</p>' : '') +
+      (it.fix ? '<div class="i-fix"><span class="mono">The fix</span><p>' + esc(it.fix) + '</p></div>' : '') +
+      '</div><span class="mono impact ' + imp + '">' + (IMPACT[imp] || esc(imp)) + '</span></li>';
+  }).join('');
+
+  if (!wins.length) document.querySelector('[data-wins-section]').hidden = true;
+  document.querySelector('[data-wins]').innerHTML = wins.map(function (w) {
+    return '<li class="win"><span class="tick" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6.3 4.8 9 10 3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span>' +
+      '<div><div class="w-title">' + esc(w.title) + '</div>' + (w.detail ? '<div class="w-detail">' + esc(w.detail) + '</div>' : '') + '</div></li>';
+  }).join('');
+
+  document.querySelector('[data-recs]').innerHTML = (d.recommendations || []).map(function (r) {
+    if (typeof r === 'string') r = { title: r };
+    return '<li><div><div class="r-title">' + esc(r.title) + '</div>' + (r.detail ? '<div class="r-detail">' + esc(r.detail) + '</div>' : '') + '</div></li>';
+  }).join('');
+
+  var p = d.preparer || {};
+  if (p.photo) { var img = document.querySelector('[data-photo]'); img.src = p.photo; img.alt = p.name || ''; img.hidden = false; }
+})();
+</script>
+</body>
+</html>
