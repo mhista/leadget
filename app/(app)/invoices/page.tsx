@@ -1,4 +1,6 @@
+import { redirect } from "next/navigation";
 import { store } from "@/lib/store";
+import { DASHBOARD_URL } from "@/lib/mode";
 import { PageHeader } from "@/components/ui";
 import { InvoiceList } from "@/components/kymaa/InvoiceList";
 
@@ -6,6 +8,7 @@ export const metadata = { title: "Invoices" };
 export const dynamic = "force-dynamic";
 
 export default async function InvoicesPage() {
+  if (DASHBOARD_URL) redirect(`${DASHBOARD_URL}/invoices`); // invoices live in the Kymaa dashboard
   const st = await store();
   const [invoices, settings, prospects] = await Promise.all([st.listInvoices(), st.getSettings(), st.listProspects()]);
   const names = Object.fromEntries(prospects.map((p) => [p.id, p.name]));

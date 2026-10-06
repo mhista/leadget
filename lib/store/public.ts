@@ -1,4 +1,5 @@
 import "server-only";
+import { T } from "./tables";
 import type { Invoice, Prospect, Settings } from "@/lib/types";
 import { SAAS, PERSONAL_WORKSPACE } from "@/lib/mode";
 import { storeKind, type Store } from "./index";
@@ -17,7 +18,7 @@ const SHARE_ID = /^[a-z0-9]{8,24}$/;
 async function storeFor(shareId: string): Promise<Store | null> {
   if (!SAAS && storeKind() === "file") return fileStore();
   if (!SAAS) return supabaseStore(PERSONAL_WORKSPACE);
-  const { data } = await admin().from("prospects").select("workspace_id").eq("share_id", shareId).maybeSingle();
+  const { data } = await admin().from(T("prospects")).select("workspace_id").eq("share_id", shareId).maybeSingle();
   return data?.workspace_id ? supabaseStore(data.workspace_id) : null;
 }
 
@@ -33,7 +34,7 @@ export async function loadShared(shareId: string): Promise<{ p: Prospect; s: Set
 async function storeForInvoice(shareId: string): Promise<Store | null> {
   if (!SAAS && storeKind() === "file") return fileStore();
   if (!SAAS) return supabaseStore(PERSONAL_WORKSPACE);
-  const { data } = await admin().from("invoices").select("workspace_id").eq("share_id", shareId).maybeSingle();
+  const { data } = await admin().from(T("invoices")).select("workspace_id").eq("share_id", shareId).maybeSingle();
   return data?.workspace_id ? supabaseStore(data.workspace_id) : null;
 }
 

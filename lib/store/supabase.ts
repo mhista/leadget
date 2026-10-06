@@ -1,4 +1,7 @@
 import "server-only";
+import { T } from "./tables";
+import { KYMAA } from "@/lib/mode";
+import { kymaaUserId } from "@/lib/kymaa-auth";
 import type { Store } from "./index";
 import { DEFAULT_SETTINGS, type Activity, type Invoice, type Prospect, type Settings, type Suppressed, type Template } from "@/lib/types";
 import { hydrate, matchKeys, uid } from "./shared";
@@ -30,23 +33,23 @@ export function supabaseStore(ws: string): Store {
     workspaceId: ws,
 
     async listProspects() {
-      const rows = must(await db().from("prospects").select("*").eq("workspace_id", ws).order("updated_at", { ascending: false }).limit(10000));
+      const rows = must(await db().from(T("prospects")).select("*").eq("workspace_id", ws).order("updated_at", { ascending: false }).limit(10000));
       return (rows as Prospect[]).map(strip);
     },
 
     async countProspects() {
-      const { count, error } = await db().from("prospects").select("id", { count: "exact", head: true }).eq("workspace_id", ws);
+      const { count, error } = await db().from(T("prospects")).select("id", { count: "exact", head: true }).eq("workspace_id", ws);
       if (error) throw new Error(`Supabase: ${error.message}`);
       return count ?? 0;
     },
 
     async getProspect(id) {
-      const row = must(await db().from("prospects").select("*").eq("workspace_id", ws).eq("id", id).maybeSingle());
+      const row = must(await db().from(T("prospects")).select("*").eq("workspace_id", ws).eq("id", id).maybeSingle());
       return row ? strip(row as Prospect) : null;
     },
 
     async createProspects(rows) {
-      const existing = must(await db().from("prospects").select("name,city,website,phone,source_ref").eq("workspace_id", ws).limit(20000)) as Prospect[];
+      const existing = must(await db().from(T("prospects")).select("name,city,website,phone,source_ref").eq("workspace_id", ws).limit(20000)) as Prospect[];
       const seen = new Set(existing.flatMap(matchKeys));
       const created: Prospect[] = [];
       let skipped = 0;
@@ -59,8 +62,8 @@ export function supabaseStore(ws: string): Store {
         created.push(p);
       }
       if (created.length) {
-        must(await db().from("prospects").insert(created.map((p) => ({ ...p, workspace_id: ws }))));
-        must(await db().from("activities").insert(created.map((p) => ({
+        must(await db().from(T("prospects")).insert(created.map((p) => ({ ...p, workspace_id: ws }))));
+        must(await db().from(T("activities")).insert(created.map((p) => ({
           id: uid(), workspace_id: ws, prospect_id: p.id, type: "created", body: `Added from ${p.source}`, created_at: p.created_at,
         }))));
       }
@@ -72,52 +75,54 @@ export function supabaseStore(ws: string): Store {
       if (!current) return null;
       const next = { ...current, ...patch, id, updated_at: new Date().toISOString() };
       next.score = scoreProspect(next);
-      must(await db().from("prospects").update(next).eq("workspace_id", ws).eq("id", id));
+      must(await db().from(T("prospects")).update(next).eq("workspace_id", ws).eq("id", id));
       return next;
     },
 
     async deleteProspects(ids) {
       if (!ids.length) return;
-      const gone = must(await db().from("prospects").select("id,name,city,website,phone,source_ref").eq("workspace_id", ws).in("id", ids)) as Prospect[];
+      const gone = must(await db().from(T("prospects")).select("id,name,city,website,phone,source_ref").eq("workspace_id", ws).in("id", ids)) as Prospect[];
       const now = new Date().toISOString();
       const rows = gone.flatMap((p) => matchKeys(p).map((key) => ({ workspace_id: ws, key, name: p.name, prospect_id: p.id, removed_at: now })));
-      if (rows.length) must(await db().from("suppressed").upsert(rows, { onConflict: "workspace_id,key" }));
-      must(await db().from("prospects").delete().eq("workspace_id", ws).in("id", ids));
+      if (rows.length) must(await db().from(T("suppressed")).upsert(rows, { onConflict: "workspace_id,key" }));
+      must(await db().from(T("prospects")).delete().eq("workspace_id", ws).in("id", ids));
     },
 
     async listSuppressed() {
-      return (must(await db().from("suppressed").select("key,name,prospect_id,removed_at").eq("workspace_id", ws).limit(50000)) as Suppressed[]);
+      return (must(await db().from(T("suppressed")).select("key,name,prospect_id,removed_at").eq("workspace_id", ws).limit(50000)) as Suppressed[]);
     },
 
     async unsuppress(prospectIds) {
-      let q = db().from("suppressed").delete().eq("workspace_id", ws);
+      let q = db().from(T("suppressed")).delete().eq("workspace_id", ws);
       if (prospectIds) q = q.in("prospect_id", prospectIds);
       must(await q);
     },
 
     async listActivities(prospectId, limit = 200) {
-      let q = db().from("activities").select("*").eq("workspace_id", ws).order("created_at", { ascending: false }).limit(limit);
+      let q = db().from(T("activities")).select("*").eq("workspace_id", ws).order("created_at", { ascending: false }).limit(limit);
       if (prospectId) q = q.eq("prospect_id", prospectId);
       return (must(await q) as Activity[]).map(strip);
     },
 
     async addActivity(a) {
       const row: Activity = { ...a, id: uid(), created_at: new Date().toISOString() };
-      must(await db().from("activities").insert({ ...row, workspace_id: ws }));
+      // Kymaa mode: remember who did it, so the dashboard can show it.
+      const extra = KYMAA ? { author: await kymaaUserId() } : {};
+      must(await db().from(T("activities")).insert({ ...row, ...extra, workspace_id: ws }));
       return row;
     },
 
     async getSettings() {
-      const data = must(await db().from("settings").select("data").eq("workspace_id", ws).maybeSingle()) as { data: Settings } | null;
+      const data = must(await db().from(T("settings")).select("data").eq("workspace_id", ws).maybeSingle()) as { data: Settings } | null;
       return { ...DEFAULT_SETTINGS, ...(data?.data ?? {}) };
     },
 
     async saveSettings(s) {
-      must(await db().from("settings").upsert({ workspace_id: ws, data: s }));
+      must(await db().from(T("settings")).upsert({ workspace_id: ws, data: s }));
     },
 
     async listTemplates() {
-      return (must(await db().from("templates").select("*").eq("workspace_id", ws).order("name")) as Template[]).map(strip);
+      return (must(await db().from(T("templates")).select("*").eq("workspace_id", ws).order("name")) as Template[]).map(strip);
     },
 
     async saveTemplate(t) {
@@ -126,40 +131,40 @@ export function supabaseStore(ws: string): Store {
         name: t.name, industry: t.industry, channel: t.channel, subject: t.subject, body: t.body, category: t.category ?? "",
       };
       if (t.id) {
-        const owned = must(await db().from("templates").select("id").eq("workspace_id", ws).eq("id", t.id).maybeSingle());
+        const owned = must(await db().from(T("templates")).select("id").eq("workspace_id", ws).eq("id", t.id).maybeSingle());
         if (!owned) throw new Error("That template doesn't exist.");
       }
-      must(await db().from("templates").upsert({ ...row, workspace_id: ws }));
+      must(await db().from(T("templates")).upsert({ ...row, workspace_id: ws }));
       return row;
     },
 
     async deleteTemplate(id) {
-      must(await db().from("templates").delete().eq("workspace_id", ws).eq("id", id));
+      must(await db().from(T("templates")).delete().eq("workspace_id", ws).eq("id", id));
     },
 
     async listInvoices(prospectId) {
-      let q = db().from("invoices").select("*").eq("workspace_id", ws).order("created_at", { ascending: false }).limit(5000);
+      let q = db().from(T("invoices")).select("*").eq("workspace_id", ws).order("created_at", { ascending: false }).limit(5000);
       if (prospectId) q = q.eq("prospect_id", prospectId);
       return (must(await q) as (Invoice & { number?: string })[]).map((r) => { const { number: _n, ...x } = strip(r); return x as Invoice; });
     },
 
     async getInvoice(id) {
-      const row = must(await db().from("invoices").select("*").eq("workspace_id", ws).eq("id", id).maybeSingle()) as (Invoice & { number?: string }) | null;
+      const row = must(await db().from(T("invoices")).select("*").eq("workspace_id", ws).eq("id", id).maybeSingle()) as (Invoice & { number?: string }) | null;
       if (!row) return null;
       const { number: _n, ...x } = strip(row);
       return x as Invoice;
     },
 
     async saveInvoice(inv) {
-      const existing = must(await db().from("invoices").select("workspace_id").eq("id", inv.id).maybeSingle()) as { workspace_id: string } | null;
+      const existing = must(await db().from(T("invoices")).select("workspace_id").eq("id", inv.id).maybeSingle()) as { workspace_id: string } | null;
       if (existing && existing.workspace_id !== ws) throw new Error("That invoice doesn't exist.");
       const row = { ...inv, updated_at: new Date().toISOString() };
-      must(await db().from("invoices").upsert({ ...row, number: inv.doc.number, workspace_id: ws }));
+      must(await db().from(T("invoices")).upsert({ ...row, number: inv.doc.number, workspace_id: ws }));
       return row;
     },
 
     async deleteInvoice(id) {
-      must(await db().from("invoices").delete().eq("workspace_id", ws).eq("id", id));
+      must(await db().from(T("invoices")).delete().eq("workspace_id", ws).eq("id", id));
     },
   };
 }

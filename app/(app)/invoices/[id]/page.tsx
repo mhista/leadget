@@ -1,4 +1,5 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { DASHBOARD_URL } from "@/lib/mode";
 import { store } from "@/lib/store";
 import { InvoiceEditor } from "@/components/kymaa/InvoiceEditor";
 
@@ -7,6 +8,7 @@ export const dynamic = "force-dynamic";
 
 export default async function InvoicePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  if (DASHBOARD_URL) redirect(`${DASHBOARD_URL}/invoices/${encodeURIComponent(id)}`);
   const st = await store();
   const [inv, settings, prospects] = await Promise.all([st.getInvoice(id), st.getSettings(), st.listProspects()]);
   if (!inv) notFound();

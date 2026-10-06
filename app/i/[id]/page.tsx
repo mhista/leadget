@@ -1,4 +1,5 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { DASHBOARD_URL } from "@/lib/mode";
 import { loadSharedInvoice } from "@/lib/store/public";
 import { KymaaInvoice } from "@/components/kymaa/KymaaInvoice";
 import { ViewBeacon } from "@/components/ViewBeacon";
@@ -18,6 +19,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 export default async function InvoicePage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ preview?: string }> }) {
   const { id } = await params;
   const { preview } = await searchParams;
+  // Links sent before invoices moved to the dashboard keep working.
+  if (DASHBOARD_URL) redirect(`${DASHBOARD_URL}/i/${encodeURIComponent(id)}${preview ? "?preview=1" : ""}`);
   const found = await loadSharedInvoice(id);
   if (!found || found.inv.doc.status === "draft" && !preview) notFound();
   const { inv } = found;

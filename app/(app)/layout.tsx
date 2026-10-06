@@ -1,6 +1,6 @@
 import { Shell, type ShellAccount } from "@/components/Shell";
 import { store, storeKind } from "@/lib/store";
-import { SAAS } from "@/lib/mode";
+import { SAAS, KYMAA } from "@/lib/mode";
 
 export const dynamic = "force-dynamic";
 
@@ -21,8 +21,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     account = { name: s.user.name, email: s.user.email, plan: PLAN[s.plan].name, usage, limits: PLAN[s.plan].limits };
   }
 
+  const member = KYMAA ? await (await import("@/lib/kymaa-auth")).kymaaMember() : null;
+
   return (
-    <Shell counts={{ prospects: prospects.length, due, today: due + opened }} storage={storeKind()} locked={!!process.env.APP_PASSCODE} account={account}>
+    <Shell member={member ? { name: member.name, role: member.role } : null} counts={{ prospects: prospects.length, due, today: due + opened }} storage={storeKind()} locked={!!process.env.APP_PASSCODE} account={account}>
       {children}
     </Shell>
   );

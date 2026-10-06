@@ -45,6 +45,39 @@ export async function middleware(req: NextRequest) {
     return res;
   }
 
+  if (process.env.AUTH_MODE === "kymaa") {
+    // Links sent to prospects and clients stay public.
+    if (/^\/(m|r|i)\/|^\/api\/view$/.test(pathname)) return NextResponse.next();
+    if (/^\/(welcome|signin|signup|billing)(\/|$)/.test(pathname)) return NextResponse.redirect(new URL("/", req.url));
+    let res = NextResponse.next({ request: req });
+    const sb = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll: () => req.cookies.getAll(),
+          setAll: (list: { name: string; value: string; options?: any }[]) => {
+            list.forEach(({ name, value }) => req.cookies.set(name, value));
+            res = NextResponse.next({ request: req });
+            list.forEach(({ name, value, options }) => res.cookies.set(name, value, options));
+          },
+        },
+      },
+    );
+    const { data } = await sb.auth.getUser();
+    if (pathname === "/login") return data.user && !req.nextUrl.searchParams.has("denied") ? NextResponse.redirect(new URL("/", req.url)) : res;
+    if (!data.user) {
+      const url = req.nextUrl.clone();
+      url.pathname = "/login";
+      url.search = pathname === "/" ? "" : `?next=${encodeURIComponent(pathname + search)}`;
+      return NextResponse.redirect(url);
+    }
+    // On the Kymaa team, with a role that works leads (RLS lets members read the team list).
+    const { data: me } = await sb.from("admins").select("role,active").eq("user_id", data.user.id).maybeSingle();
+    if (!me?.active || !["owner", "editor", "sales"].includes(me.role)) return NextResponse.redirect(new URL("/login?denied=1", req.url));
+    return res;
+  }
+
   // Personal mode — the SaaS-only pages don't exist here.
   if (/^\/(welcome|signin|signup|billing)(\/|$)/.test(pathname)) return NextResponse.redirect(new URL("/", req.url));
 

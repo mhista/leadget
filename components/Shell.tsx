@@ -10,6 +10,8 @@ import {
 import { logout } from "@/lib/actions";
 import { OwnerMark } from "@/components/ViewBeacon";
 import { signOut } from "@/lib/saas/actions";
+import { kymaaLogout } from "@/lib/kymaa-actions";
+import { DASHBOARD_URL } from "@/lib/mode";
 
 export type ShellAccount = {
   name: string; email: string; plan: string;
@@ -35,8 +37,9 @@ const NAV = [
 ];
 
 export function Shell({
-  children, counts, storage, locked, account,
+  children, counts, storage, locked, account, member = null,
 }: {
+  member?: { name: string; role: string } | null;
   children: React.ReactNode;
   counts: { prospects: number; due: number; today: number };
   storage: "file" | "supabase";
@@ -59,6 +62,10 @@ export function Shell({
     try { localStorage.setItem("leadget-theme", next); } catch { /* private mode */ }
   }
 
+  // Kymaa mode: invoices (and enquiries) live in the Kymaa dashboard.
+  const nav = DASHBOARD_URL
+    ? [...NAV.map((n) => (n.href === "/invoices" ? { ...n, href: `${DASHBOARD_URL}/invoices` } : n)), { href: `${DASHBOARD_URL}/leads`, label: "Kymaa dashboard", icon: IconHome }]
+    : NAV;
   const isActive = (href: string, exact?: boolean) => (exact ? pathname === href : pathname === href || pathname.startsWith(href + "/"));
 
   const rail = (
@@ -69,7 +76,7 @@ export function Shell({
       </div>
 
       <nav className="mt-2 flex-1 space-y-0.5 px-3" aria-label="Main">
-        {NAV.map(({ href, label, icon: Icon, exact, count, alert }) => {
+        {nav.map(({ href, label, icon: Icon, exact, count, alert }: (typeof NAV)[number]) => {
           const active = isActive(href, exact);
           const n = count ? counts[count] : 0;
           return (
@@ -140,7 +147,19 @@ export function Shell({
           {theme === "dark" ? <IconSun className="h-[17px] w-[17px]" /> : <IconMoon className="h-[17px] w-[17px]" />}
           {theme === "dark" ? "Light mode" : "Dark mode"}
         </button>
-        {account ? (
+        {member ? (
+          <form action={kymaaLogout}>
+            <button className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors hover:bg-white/[.04]">
+              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-accent text-[11px] font-semibold text-accent-ink">
+                {member.name.split(/[\s@.]+/).filter(Boolean).slice(0, 2).map((x) => x[0]?.toUpperCase()).join("")}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-[12.5px] text-rail-ink">{member.name}</span>
+                <span className="block text-[11px] capitalize text-rail-muted">{member.role} · Sign out</span>
+              </span>
+            </button>
+          </form>
+        ) : account ? (
           <form action={signOut}>
             <button className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors hover:bg-white/[.04]">
               <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-accent text-[11px] font-semibold text-accent-ink">
