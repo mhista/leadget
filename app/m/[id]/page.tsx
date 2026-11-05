@@ -1,4 +1,5 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { KYMAA_LINKS_URL } from "@/lib/mode";
 import { loadShared } from "@/lib/store/public";
 import { MockupSite } from "@/components/MockupSite";
 import { ViewBeacon } from "@/components/ViewBeacon";
@@ -15,6 +16,7 @@ export default async function MockupPage({ params, searchParams }: { params: Pro
   const { id } = await params;
   const { preview } = await searchParams;
   const found = await loadShared(id);
+  if (!found && KYMAA_LINKS_URL) redirect(`${KYMAA_LINKS_URL}/m/${encodeURIComponent(id)}`);
   if (!found?.p.mockup) notFound();
   return (
     <>

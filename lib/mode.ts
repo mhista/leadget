@@ -20,3 +20,11 @@ export const PERSONAL_WORKSPACE = "personal";
 export const KYMAA = process.env.AUTH_MODE === "kymaa";
 /** The Kymaa dashboard (for invoices and enquiries). Public so the sidebar can link to it. */
 export const DASHBOARD_URL = (process.env.NEXT_PUBLIC_DASHBOARD_URL || "").replace(/\/$/, "");
+
+/**
+ * Kymaa now works its leads inside the Kymaa dashboard. On the public Leadget
+ * deployment, set KYMAA_LINKS_URL (e.g. https://admin.kymaa.tech) so report,
+ * mock-up and invoice links Kymaa sent from here before the move still open:
+ * any share link this deployment doesn't know is forwarded there.
+ */
+export const KYMAA_LINKS_URL = (process.env.KYMAA_LINKS_URL || "").replace(/\/$/, "");

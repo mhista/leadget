@@ -1,4 +1,5 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { KYMAA_LINKS_URL } from "@/lib/mode";
 import { loadShared } from "@/lib/store/public";
 import { reportFor } from "@/lib/kymaa/report";
 import { KymaaReport } from "@/components/kymaa/KymaaReport";
@@ -21,6 +22,7 @@ export default async function ReportPage({ params, searchParams }: { params: Pro
   const { id } = await params;
   const { preview } = await searchParams;
   const found = await loadShared(id);
+  if (!found && KYMAA_LINKS_URL) redirect(`${KYMAA_LINKS_URL}/r/${encodeURIComponent(id)}`);
   if (!found?.p.audit) notFound();
   const { p, s } = found;
   return (
