@@ -199,7 +199,7 @@ export async function deleteAndGoBack(id: string) {
 async function auditOne(p: Prospect) {
   if (!p.website) return null;
   const st = await store();
-  const audit = await auditWebsite(p.website);
+  const audit = await auditWebsite(p.website, { name: p.name });
   const patch: Partial<Prospect> = { audit };
   // Found an email or phone on their site and we had none? Keep it.
   if (!p.email && audit.emails[0]) patch.email = audit.emails[0];
@@ -466,7 +466,7 @@ export async function runSpeedTest(id: string): Promise<Result<Prospect>> {
     const { pageSpeed, pageSpeedIssues } = await import("@/lib/pagespeed");
     const res = await pageSpeed(p.audit?.final_url || p.website);
     if (!res.ok) return { ok: false, error: res.error };
-    const base = p.audit ?? (await auditWebsite(p.website));
+    const base = p.audit ?? (await auditWebsite(p.website, { name: p.name }));
     const extra = pageSpeedIssues(res.data).filter((i) => !base.issues.some((x) => x.id === i.id));
     const issues = [...base.issues.filter((i) => !i.id.startsWith("ps-")), ...extra];
     const opportunity = Math.min(100, issues.reduce((n, i) => n + (i.severity === "high" ? 28 : i.severity === "medium" ? 14 : 6), 0));

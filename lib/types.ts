@@ -62,10 +62,54 @@ export type PageSpeed = {
   screenshot: string | null;
 };
 
+/**
+ * What's actually at the address on file, beyond "does it load":
+ * ok · moved (now lives at another domain) · social_only (redirects to a
+ * Facebook/Instagram/Linktree page) · parked / for_sale / expired / suspended /
+ * placeholder (the domain shows a holding page) · mismatch (the page doesn't
+ * mention this business, so the domain may belong to someone else now) ·
+ * no_dns (the domain doesn't exist any more) · down / error.
+ */
+export type SiteState =
+  | "ok" | "moved" | "social_only" | "parked" | "for_sale" | "expired" | "suspended"
+  | "placeholder" | "mismatch" | "no_dns" | "down" | "error";
+
+export type WebsiteCandidate = {
+  url: string;
+  /** listing = their Google listing · redirect = the old address forwards there · email = their email's domain · page = linked from their own page · guess = we tried a likely address */
+  source: "listing" | "redirect" | "email" | "page" | "guess";
+  /** 0–1: how sure we are this is them. */
+  confidence: number;
+  state?: SiteState;
+  evidence: string[];
+};
+
+export type WebsiteLookup = {
+  checked_at: string;
+  /** From Google: OPERATIONAL, CLOSED_TEMPORARILY or CLOSED_PERMANENTLY. */
+  business_status?: string;
+  candidates: WebsiteCandidate[];
+  /** The best address found, when it isn't the one on file. */
+  suggestion?: string;
+  /** One line for the lead page. */
+  summary: string;
+};
+
 export type Audit = {
   checked_at: string;
   url: string;
   final_url?: string;
+  site_state?: SiteState;
+  /** Where the business seems to live now, when the old address points elsewhere. */
+  moved_to?: string;
+  /** Every hop from the address on file to the page that loaded. */
+  redirects?: string[];
+  /** The page's own canonical address, when it names one. */
+  canonical?: string;
+  /** Whether the page mentions the business (only checked when a name is given). */
+  name_match?: boolean;
+  /** The last "where's their website now?" search, when one was run. */
+  lookup?: WebsiteLookup;
   reachable: boolean;
   status?: number;
   load_ms?: number;
