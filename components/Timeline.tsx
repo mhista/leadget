@@ -14,10 +14,12 @@ const ICON: Record<ActivityType, React.ReactNode> = {
   email: <IconMail className="h-3.5 w-3.5" />, whatsapp: <IconChat className="h-3.5 w-3.5" />, call: <IconPhone className="h-3.5 w-3.5" />,
   linkedin: <IconLinkedin className="h-3.5 w-3.5" />, note: <IconNote className="h-3.5 w-3.5" />, audit: <IconGlobe className="h-3.5 w-3.5" />,
   stage: <IconArrowRight className="h-3.5 w-3.5" />, created: <IconSparkle className="h-3.5 w-3.5" />,
-  viewed: <IconEye className="h-3.5 w-3.5" />,
+  viewed: <IconEye className="h-3.5 w-3.5" />, reply: <IconMail className="h-3.5 w-3.5" />,
+  meeting: <IconChat className="h-3.5 w-3.5" />, payment: <IconSparkle className="h-3.5 w-3.5" />,
 };
 const LABEL: Record<ActivityType, string> = {
   email: "Email sent", whatsapp: "WhatsApp sent", call: "Call", linkedin: "LinkedIn message", note: "Note", audit: "Audit", stage: "Stage", created: "Added", viewed: "They opened it",
+  reply: "They replied", meeting: "Meeting", payment: "Payment",
 };
 
 export function Timeline({ p, activities }: { p: Prospect; activities: Activity[] }) {
@@ -68,7 +70,7 @@ export function Timeline({ p, activities }: { p: Prospect; activities: Activity[
             return (
               <li key={a.id} className="relative flex gap-3 py-2">
                 <span className={clsx("relative z-10 grid h-7 w-7 shrink-0 place-items-center rounded-full ring-4 ring-surface",
-                  ["email", "whatsapp", "call", "linkedin"].includes(a.type) ? "bg-brand text-brand-ink" : a.type === "viewed" ? "bg-accent text-accent-ink" : "bg-page-alt text-muted")}>
+                  ["email", "whatsapp", "call", "linkedin"].includes(a.type) ? "bg-brand text-brand-ink" : a.type === "viewed" || a.type === "reply" || a.type === "payment" ? "bg-accent text-accent-ink" : "bg-page-alt text-muted")}>
                   {ICON[a.type]}
                 </span>
                 <div className="min-w-0 flex-1 pt-0.5">

@@ -247,7 +247,8 @@ export type Invoice = {
 
 export type ProspectInput = Partial<Omit<Prospect, "id" | "created_at" | "updated_at">> & { name: string };
 
-export type ActivityType = "note" | "email" | "whatsapp" | "call" | "linkedin" | "stage" | "audit" | "created" | "viewed";
+/** reply = they wrote back · meeting = a call or video meeting · payment = money in */
+export type ActivityType = "note" | "email" | "whatsapp" | "call" | "linkedin" | "stage" | "audit" | "created" | "viewed" | "reply" | "meeting" | "payment";
 
 export type Activity = {
   id: string;

@@ -86,7 +86,7 @@ async function verify(url: string, p: Pick<Prospect, "name" | "phone">, source: 
   if (audit.name_match) { evidence.push("mentions the business name"); confidence += 0.15; }
   const phone = digits(p.phone || "");
   if (phone && audit.phones.some((x) => digits(x) === phone)) { evidence.push("lists the same phone number"); confidence += 0.25; }
-  if (audit.site_state && audit.site_state !== "ok") { evidence.push(`shows: ${audit.site_state.replace("_", " ")}`); confidence -= 0.4; }
+  if (audit.site_state && audit.site_state !== "ok") { evidence.push(`not live (${audit.site_state.replace(/_/g, " ")})`); confidence -= 0.4; }
   if (source === "guess" && !audit.name_match && !evidence.includes("lists the same phone number")) return null;
   const final = audit.moved_to ?? audit.final_url ?? url;
   return { c: { url: final, source, confidence: Math.max(0, Math.min(1, +confidence.toFixed(2))), state: audit.site_state, evidence }, audit };
@@ -144,16 +144,21 @@ export async function findWebsite(p: Pick<Prospect, "name" | "city" | "country" 
   const suggestion = best && siteKey(best.c.url) !== onFile ? best.c.url : undefined;
   const closed = place?.businessStatus && place.businessStatus !== "OPERATIONAL" ? place.businessStatus : undefined;
   const host = (u: string) => new URL(u).hostname.replace(/^www\./, "");
+  const SAYS: Record<string, string> = {
+    no_dns: "a domain that no longer exists", down: "nothing (it doesn't load)", error: "an error page", parked: "a parking page", for_sale: "a “domain for sale” page",
+    expired: "an expired-domain notice", suspended: "a “suspended” notice", placeholder: "a placeholder page", mismatch: "a page that isn't about them", social_only: "a forward to a social page", moved: "a forward to another address",
+  };
+  const shows = (s?: string) => (s ? SAYS[s] ?? s : "nothing");
 
   let summary: string;
   if (closed === "CLOSED_PERMANENTLY") summary = "Google lists this business as permanently closed.";
   else if (suggestion && current?.site_state === "moved") summary = `They've moved: the old address forwards to ${host(suggestion)}.`;
-  else if (suggestion && p.website) summary = `Found a newer website: ${host(suggestion)} (${best!.c.evidence.join(", ") || best!.c.source}). The one on file ${current?.site_state === "ok" ? "still loads but looks older" : `shows: ${(current?.site_state ?? "nothing").replace("_", " ")}`}.`;
+  else if (suggestion && p.website) summary = `Found a newer website: ${host(suggestion)} (${best!.c.evidence.join(", ") || best!.c.source}). The one on file ${current?.site_state === "ok" ? "still loads but looks older" : `shows ${shows(current?.site_state)}`}.`;
   else if (suggestion) summary = `Found a website we didn't have: ${host(suggestion)} (${best!.c.evidence.join(", ") || best!.c.source}).`;
   else if (current?.site_state === "social_only") summary = `The website just forwards to ${host(current.moved_to!)}; no real site found.`;
   else if (current?.site_state === "ok") summary = "The website on file is current.";
   else if (list.some((x) => x.c.source === "guess" && x.c.state === "ok")) summary = `Possibly ${list.filter((x) => x.c.source === "guess" && x.c.state === "ok").map((x) => host(x.c.url)).join(" or ")}: it mentions their name but nothing else confirms it. Check before using.`;
-  else if (p.website) summary = `The website on file shows: ${(current?.site_state ?? "nothing").replace("_", " ")}. No replacement found.`;
+  else if (p.website) summary = `The website on file shows ${shows(current?.site_state)}. No replacement found.`;
   else summary = "No website found for them anywhere: a good lead for a new site.";
 
   return {
