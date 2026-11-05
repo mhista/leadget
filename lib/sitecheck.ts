@@ -92,7 +92,15 @@ async function verify(url: string, p: Pick<Prospect, "name" | "phone">, source: 
   return { c: { url: final, source, confidence: Math.max(0, Math.min(1, +confidence.toFixed(2))), state: audit.site_state, evidence }, audit };
 }
 
-export type LookupResult = { lookup: WebsiteLookup; /** A fresh audit of the suggestion, when there is one. */ audit?: Audit; phone?: string };
+export type LookupResult = {
+  lookup: WebsiteLookup;
+  /** A fresh audit of the address on file (none when there isn't one). */
+  current?: Audit;
+  /** A fresh audit of the suggestion, when there is one. */
+  audit?: Audit;
+  /** Their phone from Google, when the lead has none. */
+  phone?: string;
+};
 
 export async function findWebsite(p: Pick<Prospect, "name" | "city" | "country" | "website" | "email" | "phone" | "source_ref" | "audit">): Promise<LookupResult> {
   const cands = new Map<string, { c: WebsiteCandidate; audit: Audit }>();
@@ -156,7 +164,8 @@ export async function findWebsite(p: Pick<Prospect, "name" | "city" | "country" 
       suggestion,
       summary,
     },
-    audit: best?.audit ?? current ?? undefined,
+    current: current ?? undefined,
+    audit: suggestion ? best?.audit : undefined,
     phone: !p.phone ? listedPhone : undefined,
   };
 }
