@@ -14,10 +14,10 @@ import type { Audit, AuditIssue, SiteState } from "@/lib/types";
  * One request, no crawling, a normal browser user-agent, 12s ceiling.
  */
 
-const UA =
+export const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36";
 
-const PRIVATE_HOST = /^(localhost|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|0\.|169\.254\.|\[?::1\]?$)/i;
+export const PRIVATE_HOST = /^(localhost|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|0\.|169\.254\.|\[?::1\]?$)/i;
 
 const PLATFORMS: [RegExp, string][] = [
   [/wp-content|wp-includes|wordpress/i, "WordPress"],
@@ -245,6 +245,9 @@ export async function auditWebsite(input: string, opts: { name?: string } = {}):
     a.site_state = SOCIAL_HOSTS.test(new URL(elsewhere).hostname) ? "social_only" : "moved";
   } else if (parked && (html.length < 120_000 || parked[1] !== "placeholder")) {
     a.site_state = parked[1];
+  } else if (!a.reachable && [401, 403, 429, 503].includes(a.status ?? 0) && /cloudflare|just a moment|attention required|captcha|access denied|request blocked|sucuri|incapsula|akamai|ddos|bot/i.test(lower.slice(0, 50_000) + (res.headers.get("server") ?? ""))) {
+    // A firewall turning away automated visitors: the site works for people.
+    a.site_state = "blocked";
   } else if (!a.reachable) {
     a.site_state = "error";
   } else {
@@ -268,6 +271,10 @@ function findIssues(a: Audit, html: string): AuditIssue[] {
   const out: AuditIssue[] = [];
   const year = new Date().getFullYear();
 
+  if (a.site_state === "blocked") {
+    out.push({ id: "blocked", severity: "low", title: `Firewall blocks automated visitors (${a.status})`, pitch: "Your site's firewall turned my checker away, which can also stop link previews on WhatsApp and LinkedIn from showing." });
+    return out;
+  }
   if (!a.reachable) {
     out.push({ id: "status", severity: "high", title: `Site returns an error (${a.status})`, pitch: `Your website is returning an error page (${a.status}) right now, so visitors can't see anything.` });
     return out;

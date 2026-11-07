@@ -72,7 +72,32 @@ export type PageSpeed = {
  */
 export type SiteState =
   | "ok" | "moved" | "social_only" | "parked" | "for_sale" | "expired" | "suspended"
-  | "placeholder" | "mismatch" | "no_dns" | "down" | "error";
+  | "placeholder" | "mismatch" | "blocked" | "no_dns" | "down" | "error";
+
+/** Like httpstatus.io, plus the things a buyer would notice. */
+export type SiteHealth = {
+  checked_at: string;
+  /** 0–100 */
+  score: number;
+  /** healthy · redirects · blocked (a firewall, not broken) · broken (4xx) · gone (410) · server_error (5xx) · offline · dns_failed */
+  verdict: "healthy" | "redirects" | "blocked" | "broken" | "gone" | "server_error" | "offline" | "dns_failed";
+  /** e.g. "Healthy — Redirects (301 → 200)" */
+  label: string;
+  status: number | null;
+  hops: { url: string; status: number }[];
+  ttfb_ms: number | null;
+  https_redirect: boolean | null;
+  tls: { valid: boolean; days_left: number | null; issuer: string } | null;
+  robots: boolean | null;
+  sitemap: boolean | null;
+  soft_404: boolean | null;
+  headers: { hsts: boolean; csp: boolean; nosniff: boolean; frame: boolean; referrer: boolean } | null;
+  links_checked: number;
+  broken_links: { url: string; status: number | string }[];
+  mixed_content: number;
+  email: { mx: boolean; spf: boolean; dmarc: boolean } | null;
+  issues: AuditIssue[];
+};
 
 export type WebsiteCandidate = {
   url: string;
@@ -110,6 +135,8 @@ export type Audit = {
   name_match?: boolean;
   /** The last "where's their website now?" search, when one was run. */
   lookup?: WebsiteLookup;
+  /** Technical health (status codes, certificate, links, email DNS…), when checked. */
+  health?: SiteHealth;
   reachable: boolean;
   status?: number;
   load_ms?: number;
