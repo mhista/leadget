@@ -77,7 +77,7 @@ export async function siteHealth(input: string): Promise<SiteHealth> {
   h.email = { mx, spf, dmarc };
 
   try { await lookup(host); } catch {
-    Object.assign(h, { verdict: "dns_failed", label: "Error — Server offline / DNS failed", score: 0 });
+    Object.assign(h, { verdict: "dns_failed", label: "Error: server offline or DNS failed", score: 0 });
     issue({ id: "dns", severity: "high", title: "Domain doesn't resolve", pitch: `${host} doesn't point anywhere right now, so the site is unreachable for everyone.` });
     return h;
   }
@@ -85,7 +85,7 @@ export async function siteHealth(input: string): Promise<SiteHealth> {
   let c: Awaited<ReturnType<typeof chain>>;
   try { c = await chain(start); } catch {
     try { c = await chain(start.replace(/^https:/, "http:")); } catch {
-      Object.assign(h, { verdict: "offline", label: "Error — Server offline / connection failed", score: 5 });
+      Object.assign(h, { verdict: "offline", label: "Error: server offline or not answering", score: 5 });
       issue({ id: "offline", severity: "high", title: "Server doesn't answer", pitch: "Your website's server didn't answer at all when I tried it." });
       return h;
     }
@@ -97,14 +97,14 @@ export async function siteHealth(input: string): Promise<SiteHealth> {
   const codes = c.hops.map((x) => x.status).join(" → ");
   if (res.status >= 200 && res.status < 300) {
     h.verdict = c.hops.length > 1 ? "redirects" : "healthy";
-    h.label = c.hops.length > 1 ? `Healthy — Redirects (${codes})` : "Healthy — Direct access";
+    h.label = c.hops.length > 1 ? `Healthy: redirects (${codes})` : "Healthy: direct access";
   } else if ([401, 403, 429, 503].includes(res.status) && BLOCK.test(body.slice(0, 40_000) + (res.headers.get("server") ?? ""))) {
-    h.verdict = "blocked"; h.label = `Warning — Access restricted / firewall (${res.status})`;
-  } else if (res.status === 410) { h.verdict = "gone"; h.label = "Error — Resource permanently removed (410)"; }
-  else if (res.status >= 500) { h.verdict = "server_error"; h.label = `Error — Server error (${res.status})`; }
-  else { h.verdict = res.status === 403 ? "blocked" : "broken"; h.label = res.status === 403 ? "Warning — Access restricted (403)" : `Error — Page / domain broken or missing (${res.status})`; }
+    h.verdict = "blocked"; h.label = `Warning: access restricted by a firewall (${res.status})`;
+  } else if (res.status === 410) { h.verdict = "gone"; h.label = "Error: permanently removed (410)"; }
+  else if (res.status >= 500) { h.verdict = "server_error"; h.label = `Error: server error (${res.status})`; }
+  else { h.verdict = res.status === 403 ? "blocked" : "broken"; h.label = res.status === 403 ? "Warning: access restricted (403)" : `Error: page or domain broken or missing (${res.status})`; }
   if (c.hops.length > 2) issue({ id: "redirect-chain", severity: "low", title: `${c.hops.length - 1} redirects before the page`, pitch: `Your address bounces through ${c.hops.length - 1} redirects (${codes}) before the page loads, which slows the first visit and dilutes search ranking.` });
-  if (h.verdict === "broken" || h.verdict === "gone" || h.verdict === "server_error") issue({ id: "status", severity: "high", title: h.label.replace(/^Error — /, ""), pitch: `Your homepage returns ${res.status} right now, so visitors see an error instead of your business.` });
+  if (h.verdict === "broken" || h.verdict === "gone" || h.verdict === "server_error") issue({ id: "status", severity: "high", title: h.label.replace(/^Error: /, ""), pitch: `Your homepage returns ${res.status} right now, so visitors see an error instead of your business.` });
 
   const final = new URL(c.final);
   const okPage = res.status >= 200 && res.status < 300;

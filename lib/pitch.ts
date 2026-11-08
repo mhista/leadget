@@ -19,9 +19,14 @@ export async function writePitch(p: Prospect, s: Settings, opts: { angle?: strin
   if (groqConfigured()) {
     const ai = await aiPitch(p, s, opts.angle);
     if (ai.ok) return ai.pitch;
-    return { ...playbookPitch(p, s), warning: `AI draft unavailable (${ai.error}) — used the playbook instead.` };
+    return { ...plainPitch(playbookPitch(p, s)), warning: `AI draft unavailable (${ai.error}), used the playbook instead.` };
   }
-  return playbookPitch(p, s);
+  return plainPitch(playbookPitch(p, s));
+}
+
+/** No em or en dashes in anything the lead reads (settings text included). */
+function plainPitch(x: Pitch): Pitch {
+  return { ...x, subject: plain(x.subject), body: plain(x.body), whatsapp: plain(x.whatsapp), followups: x.followups.map((f) => ({ ...f, subject: plain(f.subject), body: plain(f.body) })) };
 }
 
 /* ── Facts, shared by both writers ───────────────────────────────────── */
@@ -49,8 +54,8 @@ export function playbookPitch(p: Prospect, s: Settings): Pitch {
   let observation: string;
   let subject: string;
   if (!p.website) {
-    observation = `I was looking at ${pb.label.toLowerCase()} businesses${where(p) ? ` in ${where(p)}` : ""} and noticed ${p.name} doesn't have a website yet${p.reviews ? `, even though you have ${p.reviews} reviews on Google — people clearly already look for you` : ""}.`;
-    subject = `${p.name} — a website for the people already searching for you`;
+    observation = `I was looking at ${pb.label.toLowerCase()} businesses${where(p) ? ` in ${where(p)}` : ""} and noticed ${p.name} doesn't have a website yet${p.reviews ? `, even though you have ${p.reviews} reviews on Google, so people clearly already look for you` : ""}.`;
+    subject = `${p.name}: a website for the people already searching for you`;
   } else if (top.length) {
     observation = `I had a look at ${p.name}'s website and noticed a couple of things. ${top.map((i) => i.pitch).join(" ")}`;
     subject = top[0].id === "down" ? `${p.name}'s website isn't loading` : `A couple of quick things on ${p.name}'s website`;
@@ -62,14 +67,14 @@ export function playbookPitch(p: Prospect, s: Settings): Pitch {
   const proof = s.proof.trim() ? `\n\n${s.proof.trim()}` : "";
   const cta = s.booking_link
     ? `Would a 15-minute call be useful? You can pick a time here: ${s.booking_link}`
-    : "Would a 15-minute call next week be useful? Happy to send a quick mock-up first so you can see what I mean — no charge.";
+    : "Would a 15-minute call next week be useful? Happy to send a quick mock-up first so you can see what I mean, no charge.";
 
   const body = [
     hi,
     "",
     observation,
     "",
-    `${me}. I help ${pb.label.toLowerCase()} businesses with ${offer} — ${pb.hook}.${proof}`,
+    `${me}. I help ${pb.label.toLowerCase()} businesses with ${offer}, ${pb.hook}.${proof}`,
     "",
     cta,
     "",
@@ -80,7 +85,7 @@ export function playbookPitch(p: Prospect, s: Settings): Pitch {
   ].join("\n");
 
   const whatsapp = [
-    `${hi.replace(/,$/, "")} — ${s.your_name ? `${s.your_name} here` : "quick message"}.`,
+    `${hi.replace(/,$/, "")}, ${s.your_name ? `${s.your_name} here` : "quick message"}.`,
     !p.website
       ? `I noticed ${p.name} doesn't have a website yet. I build ${pb.label.toLowerCase()} sites with ${pb.hook}.`
       : top.length
@@ -98,7 +103,7 @@ export function playbookPitch(p: Prospect, s: Settings): Pitch {
     {
       day: 7,
       subject: `An idea for ${p.name}`,
-      body: `${hi}\n\nOne concrete idea: ${pb.offers[1] ?? pb.offers[0]}. For most ${pb.label.toLowerCase()} businesses the win is simple — ${pb.pains[0].charAt(0).toLowerCase() + pb.pains[0].slice(1)}, and this fixes it.\n\nWorth a quick chat?\n\n${s.your_name || ""}`.trim(),
+      body: `${hi}\n\nOne concrete idea: ${pb.offers[1] ?? pb.offers[0]}. For most ${pb.label.toLowerCase()} businesses the win is simple: ${pb.pains[0].charAt(0).toLowerCase() + pb.pains[0].slice(1)}, and this fixes it.\n\nWorth a quick chat?\n\n${s.your_name || ""}`.trim(),
     },
     {
       day: 14,
@@ -135,16 +140,17 @@ async function aiPitch(p: Prospect, s: Settings, angle?: string): Promise<{ ok: 
   const system = `You write cold outreach for a freelance software developer. You write like a thoughtful human, not a marketer.
 
 Rules:
-- The first email is 70–130 words. Plain text. No emojis, no bullet lists, no exclamation marks, no "I hope this finds you well".
+- The first email is 70 to 130 words. Plain text. No emojis, no bullet lists, no exclamation marks, no "I hope this finds you well".
 - Open with ONE specific, true observation about this business, taken only from the facts given (audit findings, missing website, reviews). Never invent facts, numbers, clients or results. If the sender gave no proof, don't claim any.
 - Offer ONE relevant fix from offers_that_fit, framed as the outcome for the business.
 - End with a low-effort call to action (a 15-minute call, or offering a free mock-up). Use the booking link if provided.
 - Sign off with the sender's name and business. Add a final P.S. line telling them to reply "no thanks" and you won't follow up.
 - Match the sender's tone: warm, direct or formal.
+- Never use em dashes or en dashes. Use commas, full stops or colons, the way people actually type.
 - Address the contact by first name if given, else "Hi there" (or "Good day" if formal).
 - Write in English suitable for the prospect's country.
 - whatsapp: under 45 words, friendly, no sign-off block.
-- followups: exactly 3 — day 3 (short bump, adds one useful thing), day 7 (a different concrete idea), day 14 (polite close-the-loop). Each under 70 words.
+- followups: exactly 3: day 3 (short bump, adds one useful thing), day 7 (a different concrete idea), day 14 (polite close-the-loop). Each under 70 words.
 
 Return JSON only: {"subject": string, "body": string, "whatsapp": string, "followups": [{"day": number, "subject": string, "body": string}]}`;
 
@@ -162,11 +168,11 @@ Return JSON only: {"subject": string, "body": string, "whatsapp": string, "follo
     return {
       ok: true,
       pitch: {
-        subject: j.subject.trim(),
-        body: j.body.trim(),
-        whatsapp: String(j.whatsapp ?? "").trim(),
+        subject: plain(j.subject.trim()),
+        body: plain(j.body.trim()),
+        whatsapp: plain(String(j.whatsapp ?? "").trim()),
         followups: Array.isArray(j.followups)
-          ? j.followups.slice(0, 3).map((f: any, i: number) => ({ day: Number(f.day) || [3, 7, 14][i], subject: String(f.subject ?? ""), body: String(f.body ?? "") }))
+          ? j.followups.slice(0, 3).map((f: any, i: number) => ({ day: Number(f.day) || [3, 7, 14][i], subject: plain(String(f.subject ?? "")), body: plain(String(f.body ?? "")) }))
           : [],
         by: "ai",
       },
@@ -177,3 +183,4 @@ Return JSON only: {"subject": string, "body": string, "whatsapp": string, "follo
 }
 
 export { renderTemplate, TEMPLATE_VARS } from "@/lib/render";
+import { plain } from "@/lib/text";

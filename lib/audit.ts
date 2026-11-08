@@ -167,7 +167,7 @@ export async function auditWebsite(input: string, opts: { name?: string } = {}):
     base.site_state = "down";
     base.issues.push({
       id: "down", severity: "high", title: "Website doesn't load",
-      pitch: "When I tried to visit your website it didn't load — anyone who finds you on Google right now hits a dead end.",
+      pitch: "When I tried to visit your website it didn't load. Anyone who finds you on Google right now hits a dead end.",
     });
     base.opportunity = 95;
     return base;
@@ -282,12 +282,12 @@ function findIssues(a: Audit, html: string): AuditIssue[] {
   const st = a.site_state;
   if (st === "moved") out.push({ id: "moved", severity: "medium", title: `Old address forwards to ${hostOf(a.moved_to)}`, pitch: `Your old address now forwards to ${hostOf(a.moved_to)}; links and listings that still use the old one depend on that forward staying up.` });
   if (st === "social_only") out.push({ id: "social-only", severity: "high", title: `Website now just forwards to ${hostOf(a.moved_to)}`, pitch: "Your web address just sends people to a social page, so there's nowhere you control that shows what you do, your prices or how to book." });
-  if (st === "for_sale" || st === "expired" || st === "parked") out.push({ id: "parked", severity: "high", title: st === "for_sale" ? "Domain is up for sale" : st === "expired" ? "Domain has expired" : "Domain shows a parking page", pitch: "Your domain shows a holding page instead of your business, so anyone who looks you up gets nothing — and someone else could buy it." });
+  if (st === "for_sale" || st === "expired" || st === "parked") out.push({ id: "parked", severity: "high", title: st === "for_sale" ? "Domain is up for sale" : st === "expired" ? "Domain has expired" : "Domain shows a parking page", pitch: "Your domain shows a holding page instead of your business, so anyone who looks you up gets nothing, and someone else could buy it." });
   if (st === "suspended") out.push({ id: "suspended", severity: "high", title: "Hosting suspended", pitch: "Your website shows a “suspended” notice, so visitors think you've closed." });
   if (st === "placeholder") out.push({ id: "placeholder", severity: "high", title: "Placeholder page", pitch: "Your domain shows a placeholder page, so anyone who looks you up doesn't see your business." });
   if (st === "mismatch") out.push({ id: "mismatch", severity: "medium", title: "Page doesn't mention this business", pitch: "The site at this address doesn't mention the business at all; it may belong to someone else now, or the listing is wrong." });
   if (!a.https) out.push({ id: "https", severity: "high", title: "No HTTPS", pitch: "Browsers mark your site as “Not secure”, which makes visitors hesitate before they contact you." });
-  if (!a.mobile_ready) out.push({ id: "mobile", severity: "high", title: "Not built for phones", pitch: "On a phone your site shows the desktop page shrunk down — and most of your visitors are on phones." });
+  if (!a.mobile_ready) out.push({ id: "mobile", severity: "high", title: "Not built for phones", pitch: "On a phone your site shows the desktop page shrunk down, and most of your visitors are on phones." });
   if ((a.load_ms ?? 0) > 4500) out.push({ id: "slow", severity: "medium", title: `Slow to load (${((a.load_ms ?? 0) / 1000).toFixed(1)}s)`, pitch: `The homepage took about ${Math.round((a.load_ms ?? 0) / 1000)} seconds to load for me; people usually leave after three.` });
   if (a.copyright_year && a.copyright_year < year - 1) out.push({ id: "stale", severity: "medium", title: `Looks unmaintained (© ${a.copyright_year})`, pitch: `The footer still says ${a.copyright_year}, which makes it look like the site isn't looked after.` });
   if (!a.title || a.title.length < 8) out.push({ id: "title", severity: "medium", title: "Missing page title", pitch: "Your homepage has no proper title, so Google shows a weak listing for you." });

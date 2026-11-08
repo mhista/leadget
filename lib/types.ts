@@ -81,7 +81,7 @@ export type SiteHealth = {
   score: number;
   /** healthy · redirects · blocked (a firewall, not broken) · broken (4xx) · gone (410) · server_error (5xx) · offline · dns_failed */
   verdict: "healthy" | "redirects" | "blocked" | "broken" | "gone" | "server_error" | "offline" | "dns_failed";
-  /** e.g. "Healthy — Redirects (301 → 200)" */
+  /** e.g. "Healthy: redirects (301 → 200)" */
   label: string;
   status: number | null;
   hops: { url: string; status: number }[];

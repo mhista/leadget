@@ -1,8 +1,9 @@
 import type { Prospect, Settings } from "@/lib/types";
 import { playbook } from "@/lib/industries";
+import { plain } from "@/lib/text";
 
 /**
- * Filling templates. Pure — used in the browser (instant previews) and on the
+ * Filling templates. Pure, used in the browser (instant previews) and on the
  * server alike.
  */
 
@@ -42,8 +43,8 @@ export function templateVars(p: Prospect, s: Settings): Record<string, string> {
     offer: lower(pb.offers[0]),
     hook: pb.hook,
     reviews: p.reviews ? String(p.reviews) : "[number of]",
-    report_link: p.share_id && p.audit ? `${(s.public_url || "").replace(/\/$/, "")}/r/${p.share_id}` : "[report link — make the report first]",
-    mockup_link: p.share_id && p.mockup ? `${(s.public_url || "").replace(/\/$/, "")}/m/${p.share_id}` : "[mock-up link — make the mock-up first]",
+    report_link: p.share_id && p.audit ? `${(s.public_url || "").replace(/\/$/, "")}/r/${p.share_id}` : "[report link: make the report first]",
+    mockup_link: p.share_id && p.mockup ? `${(s.public_url || "").replace(/\/$/, "")}/m/${p.share_id}` : "[mock-up link: make the mock-up first]",
     my_name: s.your_name || "[your name]",
     my_business: s.business_name || s.your_name || "[your business]",
     booking_link: s.booking_link || "[booking link]",
@@ -54,7 +55,7 @@ export function templateVars(p: Prospect, s: Settings): Record<string, string> {
 export function renderTemplate(t: { subject: string; body: string }, p: Prospect, s: Settings) {
   const vars = templateVars(p, s);
   const fill = (x: string) => x.replace(/\{\{\s*(\w+)\s*\}\}/g, (m, k) => vars[k] ?? m);
-  return { subject: fill(t.subject), body: fill(t.body) };
+  return { subject: plain(fill(t.subject)), body: plain(fill(t.body)) };
 }
 
 /** [square bracket] fill-ins still waiting to be written. */

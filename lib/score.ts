@@ -20,7 +20,7 @@ export function scoreReasons(p: Prospect): { label: string; points: number }[] {
 
   // 1. Opportunity
   if (!p.website) {
-    out.push({ label: "No website — the whole build is the opportunity", points: 32 });
+    out.push({ label: "No website, the whole build is the opportunity", points: 32 });
   } else if (p.audit) {
     if (!p.audit.reachable) out.push({ label: "Website is down or unreachable", points: 36 });
     else out.push({ label: `Website audit: ${p.audit.issues.length} issue${p.audit.issues.length === 1 ? "" : "s"}`, points: Math.round(p.audit.opportunity * 0.4) });

@@ -42,7 +42,7 @@ const COPY: Record<string, Copy> = {
   "real-estate": {
     theme: "forest",
     headline: "Find your next home in {city}",
-    tagline: "Browse available properties, book a viewing, and talk to our team on WhatsApp — all in one place.",
+    tagline: "Browse available properties, book a viewing, and talk to our team on WhatsApp, all in one place.",
     about: "{name} helps buyers, renters and investors find the right property in {city}, with honest advice at every step.",
     services: [
       { title: "Homes for sale", body: "Every available listing with photos, prices and locations you can filter in seconds." },
@@ -55,7 +55,7 @@ const COPY: Record<string, Copy> = {
   pharmacy: {
     theme: "mint",
     headline: "Your neighbourhood pharmacy in {city}",
-    tagline: "Order your medicines online, check what's in stock, and get refill reminders — without the phone calls.",
+    tagline: "Order your medicines online, check what's in stock, and get refill reminders, without the phone calls.",
     about: "{name} is a trusted pharmacy serving {city}, with licensed pharmacists ready to help with prescriptions and advice.",
     services: [
       { title: "Order online", body: "Send your prescription or shopping list and pick up or have it delivered." },
@@ -81,7 +81,7 @@ const COPY: Record<string, Copy> = {
   clinic: {
     theme: "ocean",
     headline: "Care you can book in minutes",
-    tagline: "See a doctor at {name} — book online, get reminders, and skip the phone queue.",
+    tagline: "See a doctor at {name}. Book online, get reminders and skip the phone queue.",
     about: "{name} provides trusted medical care to families in {city}.",
     services: [
       { title: "General consultations", body: "Same-week appointments with experienced doctors." },
@@ -94,7 +94,7 @@ const COPY: Record<string, Copy> = {
   dental: {
     theme: "ocean",
     headline: "A healthier smile, booked in a minute",
-    tagline: "Check-ups, cleaning and cosmetic treatments at {name} — book online.",
+    tagline: "Check-ups, cleaning and cosmetic treatments at {name}. Book online.",
     about: "{name} offers gentle, modern dental care in {city}.",
     services: [
       { title: "Check-ups & cleaning", body: "Keep your teeth healthy with regular visits and reminders." },
@@ -106,12 +106,12 @@ const COPY: Record<string, Copy> = {
   },
   restaurant: {
     theme: "ember",
-    headline: "Order from {name} — direct",
+    headline: "Order from {name}, direct",
     tagline: "See the full menu, order for pickup or delivery, and book a table, straight from us.",
     about: "{name} serves {city} with food made the way it should be.",
     services: [
       { title: "Full menu", body: "Every dish with photos and prices, always up to date." },
-      { title: "Order online", body: "Pickup or delivery, ordered directly — no app in the middle." },
+      { title: "Order online", body: "Pickup or delivery, ordered directly with no app in the middle." },
       { title: "Book a table", body: "Reserve for dinner, birthdays and groups." },
       { title: "Events & catering", body: "Let us feed your office, party or celebration." },
     ],
@@ -120,7 +120,7 @@ const COPY: Record<string, Copy> = {
   hotel: {
     theme: "noir",
     headline: "Stay at {name}",
-    tagline: "Book directly for the best rate — see the rooms, check availability and confirm in minutes.",
+    tagline: "Book directly for the best rate. See the rooms, check availability and confirm in minutes.",
     about: "{name} welcomes guests to {city} with comfortable rooms and warm service.",
     services: [
       { title: "Rooms & suites", body: "See every room with photos, amenities and prices." },
@@ -147,7 +147,7 @@ const COPY: Record<string, Copy> = {
     theme: "ocean",
     headline: "Deliveries you can track",
     tagline: "Get an instant quote, book a pickup, and follow your package every step of the way.",
-    about: "{name} moves packages and freight across {city} and beyond — on time.",
+    about: "{name} moves packages and freight across {city} and beyond, on time.",
     services: [
       { title: "Same-day delivery", body: "Fast deliveries across the city." },
       { title: "Track a shipment", body: "Live status, without calling anyone." },
@@ -186,7 +186,7 @@ const COPY: Record<string, Copy> = {
     theme: "ember",
     headline: "Shop {name} online",
     tagline: "Browse what's in store, order for delivery, and get updates on new arrivals.",
-    about: "{name} brings great products to customers in {city} — now online too.",
+    about: "{name} brings great products to customers in {city}, now online too.",
     services: [
       { title: "Shop the range", body: "Everything in store, with prices and photos." },
       { title: "Delivery & pickup", body: "Order online, collect or have it delivered." },
@@ -224,7 +224,7 @@ const COPY: Record<string, Copy> = {
   church: {
     theme: "plum",
     headline: "Welcome home",
-    tagline: "Service times, sermons and events at {name} — and give online.",
+    tagline: "Service times, sermons and events at {name}. You can give online too.",
     about: "{name} is a community of faith in {city}. Everyone is welcome.",
     services: [
       { title: "Service times", body: "Join us this Sunday and through the week." },

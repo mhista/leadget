@@ -297,7 +297,7 @@ export async function generatePitch(id: string, angle?: string, swipeId?: string
     if (!p) return { ok: false as const, error: "Prospect not found." };
     const sw = swipeId ? SWIPE[swipeId] : undefined;
     const steer = [
-      sw && `Use the "${sw.angle}" angle (${sw.category}): ${sw.guidance} Style reference, do not copy literally — keep any [bracketed] parts the sender must fill in:\n${sw.subject}\n${sw.body}`,
+      sw && `Use the "${sw.angle}" angle (${sw.category}): ${sw.guidance} Style reference, do not copy literally. Keep any [bracketed] parts the sender must fill in:\n${sw.subject}\n${sw.body}`,
       angle,
     ].filter(Boolean).join("\n\n");
     if (groqConfigured()) await meter("ai");

@@ -35,11 +35,11 @@ export const SWIPES: Swipe[] = [
   /* ── No website ─────────────────────────────────────────────── */
   {
     id: "nosite-mockup", category: "No website", angle: "Offer the mock-up", step: "opener", channel: "email",
-    guidance: "Business has no website. Offer a free one-page mock-up with their name on it — the lowest-risk yes there is.",
+    guidance: "Business has no website. Offer a free one-page mock-up with their name on it, the lowest-risk yes there is.",
     subject: "a website for {{company}}, before you pay a thing",
     body: `Hi {{first_name}},
 
-I looked for {{company}} online and couldn't find a website — just the listing. People in {{city}} are searching for {{industry}} businesses on their phones every day, and right now there's nothing for them to click.
+I looked for {{company}} online and couldn't find a website, just the listing. People in {{city}} are searching for {{industry}} businesses on their phones every day, and right now there's nothing for them to click.
 
 So here's an easy offer: I'll build a one-page mock-up of what {{company}}'s site could look like, with your name, services and a WhatsApp button, and send it over. If you like it, we talk. If not, you keep the idea.
 
@@ -50,12 +50,12 @@ Want me to make it?
   {
     id: "nosite-searching", category: "No website", angle: "They're already looking for you", step: "opener", channel: "email",
     guidance: "No website but decent reviews. The demand already exists; the site just catches it.",
-    subject: "{{reviews}} people found {{company}} — then what?",
+    subject: "{{reviews}} people found {{company}}. Then what?",
     body: `Hi {{first_name}},
 
 {{company}} has {{reviews}} reviews on Google, which means people are actively looking you up. What they find after that is a map pin and a phone number.
 
-A simple site would let them see your services, prices and location, and message you in one tap — {{hook}}.
+A simple site would let them see your services, prices and location and message you in one tap. That means {{hook}}.
 
 I build these for {{industry}} businesses. Would a 15-minute call this week be useful?
 
@@ -64,7 +64,7 @@ I build these for {{industry}} businesses. Would a 15-minute call this week be u
 
   {
     id: "mockup-link", category: "No website", angle: "Here's your mock-up", step: "opener", channel: "email",
-    guidance: "You've already made their mock-up. Lead with the link — it does the selling.",
+    guidance: "You've already made their mock-up. Lead with the link. It does the selling.",
     subject: "I made {{company}} a website (preview inside)",
     body: `Hi {{first_name}},
 
@@ -72,7 +72,7 @@ I couldn't find a website for {{company}}, so I made you a preview of what one c
 
 {{mockup_link}}
 
-It has your services, your location and a WhatsApp button, so customers can reach you in one tap. It's a concept — nothing's live and there's no charge for it.
+It has your services, your location and a WhatsApp button, so customers can reach you in one tap. It's a concept. Nothing's live and there's no charge for it.
 
 If you like it, I can have the real thing running in [timeframe]. Want to talk it through?
 
@@ -82,17 +82,17 @@ If you like it, I can have the real thing running in [timeframe]. Want to talk i
     id: "wa-mockup-link", category: "No website", angle: "WhatsApp: here's your mock-up", step: "opener", channel: "whatsapp",
     guidance: "Mock-up made, and they live on WhatsApp.",
     subject: "",
-    body: `Hello {{first_name}}, I made a quick preview of a website for {{company}}: {{mockup_link}} — it's free to look at, no obligation. If you like it, I can make it real.`,
+    body: `Hello {{first_name}}, I made a quick preview of a website for {{company}}: {{mockup_link}}. It's free to look at, no obligation. If you like it, I can make it real.`,
   },
 
   /* ── Audit ──────────────────────────────────────────────────── */
   {
     id: "report-link", category: "Audit", angle: "Here's your website report", step: "opener", channel: "email",
     guidance: "You've made their report. Send it as a no-strings gift; the grade and the phone screenshot do the talking.",
-    subject: "{{company}}'s website — a quick check (free)",
+    subject: "A quick (free) check of {{company}}'s website",
     body: `Hi {{first_name}},
 
-I ran a check on {{company}}'s website and put the results on one page — how it does on phones, Google's speed score, and what's worth fixing first:
+I ran a check on {{company}}'s website and put the results on one page: how it does on phones, Google's speed score, and what's worth fixing first:
 
 {{report_link}}
 
@@ -118,13 +118,13 @@ Happy to send over the three changes I'd make, no charge. Want them?
   },
   {
     id: "audit-teardown", category: "Value-first", angle: "Send the teardown", step: "opener", channel: "email",
-    guidance: "Give first: a short written teardown — what works, what to fix. Works on busy owners who ignore pitches.",
-    subject: "3 things working, 3 to fix — {{company}}",
+    guidance: "Give first: a short written teardown of what works and what to fix. Works on busy owners who ignore pitches.",
+    subject: "{{company}}: 3 things working, 3 to fix",
     body: `Hi {{first_name}},
 
 I put together a short, honest review of {{company}}'s website: three things that are working, and three that are costing you enquiries. The biggest one: {{issue}}
 
-It's yours either way — no call needed. Shall I send it over?
+It's yours either way, no call needed. Shall I send it over?
 
 {{signature}}`,
   },
@@ -132,11 +132,11 @@ It's yours either way — no call needed. Shall I send it over?
   /* ── Observation / compliment / curiosity ───────────────────── */
   {
     id: "observation", category: "Observation", angle: "Noticed something real", step: "opener", channel: "email",
-    guidance: "You saw something specific — a new branch, a hiring post, a launch. Say what it usually means, then why that's the moment.",
+    guidance: "You saw something specific: a new branch, a hiring post, a launch. Say what it usually means, then why that's the moment.",
     subject: "saw {{company}} is [doing X]",
     body: `Hi {{first_name}},
 
-Saw that {{company}} is [specific thing you noticed — new branch, new service, hiring]. That usually means [what it tends to lead to — more enquiries, more admin, more pressure on the front desk].
+Saw that {{company}} is [specific thing you noticed: new branch, new service, hiring]. That usually means [what it tends to lead to: more enquiries, more admin, more pressure on the front desk].
 
 That's normally when [what you build] pays for itself fastest, because [one-line reason].
 
@@ -150,7 +150,7 @@ If the timing's right, I'd love 15 minutes. If not, tell me when to check back.
     subject: "not flattery, {{first_name}}",
     body: `Hi {{first_name}},
 
-I'll be straight: [a specific thing {{company}} does well — e.g. the reviews people leave about your staff] is the reason I'm writing to you and not to anyone else in {{city}}.
+I'll be straight: [a specific thing {{company}} does well, e.g. the reviews people leave about your staff] is the reason I'm writing to you and not to anyone else in {{city}}.
 
 The only thing that doesn't match it is online. {{issue}}
 
@@ -160,7 +160,7 @@ Businesses as good as yours should look it everywhere. Worth a short chat?
   },
   {
     id: "curiosity-guess", category: "Curiosity", angle: "Make a specific guess", step: "opener", channel: "email",
-    guidance: "Guess their situation from the playbook pain. If you're right, they reply; if wrong, they often correct you — also a reply.",
+    guidance: "Guess their situation from the playbook pain. If you're right, they reply; if wrong, they often correct you, which is also a reply.",
     subject: "a guess about {{company}}",
     body: `Hi {{first_name}},
 
@@ -182,7 +182,7 @@ Either way, worth a reply?
 
 Short one, because you're busy.
 
-I help {{industry}} businesses get {{hook}} — without [the usual pain, e.g. a big agency retainer or a six-month project].
+I help {{industry}} businesses get {{hook}}, without [the usual pain, e.g. a big agency retainer or a six-month project].
 
 If that's worth 15 minutes, reply "yes" and I'll show you what it would look like for {{company}}. If not, no problem at all.
 
@@ -197,7 +197,7 @@ If that's worth 15 minutes, reply "yes" and I'll show you what it would look lik
 Two options for {{company}}:
 
 1. Leave things as they are, and keep living with this: {{pain}}.
-2. Let me build {{offer}} — up and running in [timeframe], for less than [a relatable comparison].
+2. Let me build {{offer}}, up and running in [timeframe], for less than [a relatable comparison].
 
 I'd obviously pick the second, but you know your business better than I do. Want the details?
 
@@ -257,7 +257,7 @@ If that's the case, the fix is faster and cheaper than more advertising. Want to
     subject: "steal this, {{first_name}}",
     body: `Hi {{first_name}},
 
-Something you can use whether we ever work together or not: [one concrete tip for {{company}} — e.g. add a WhatsApp button to your Google Business profile; it takes two minutes].
+Something you can use whether we ever work together or not: [one concrete tip for {{company}}, e.g. add a WhatsApp button to your Google Business profile; it takes two minutes].
 
 That alone should [small, believable result]. If you'd like the full version of what I'd do for {{company}}, just say so.
 
@@ -265,7 +265,7 @@ That alone should [small, believable result]. If you'd like the full version of 
   },
   {
     id: "video", category: "Video", angle: "Show, don't tell", step: "follow-up", channel: "email",
-    guidance: "Record a 2–3 minute screen recording walking through their actual site. Replies jump when they see their own business.",
+    guidance: "Record a 2-3 minute screen recording walking through their actual site. Replies jump when they see their own business.",
     subject: "2-minute video for {{company}}",
     body: `Hi {{first_name}},
 
@@ -273,7 +273,7 @@ Instead of another wall of text, I recorded a quick walkthrough of {{company}}'s
 
 [video link]
 
-If it's useful, reply and we'll take it from there. If not, no worries — it was fun to make.
+If it's useful, reply and we'll take it from there. If not, no worries. It was fun to make.
 
 {{signature}}`,
   },
@@ -285,7 +285,7 @@ If it's useful, reply and we'll take it from there. If not, no worries — it wa
     subject: "how [a similar business] got [result]",
     body: `Hi {{first_name}},
 
-[A similar business — e.g. a law firm in Lagos] came to me with [the before — e.g. a site that didn't work on phones]. Within [timeframe] they had [the after — e.g. enquiries coming in through a proper intake form].
+[A similar business, e.g. a law firm in Lagos] came to me with [the before, e.g. a site that didn't work on phones]. Within [timeframe] they had [the after, e.g. enquiries coming in through a proper intake form].
 
 Same kind of business as {{company}}. The fix wasn't complicated, just done properly.
 
@@ -295,7 +295,7 @@ Are you the right person to talk to about this, or is there someone else I shoul
   },
   {
     id: "local-competitor", category: "Local", angle: "Your competitors are online", step: "opener", channel: "email",
-    guidance: "Competitors nearby already have good sites or booking. Not scare tactics — just what customers compare.",
+    guidance: "Competitors nearby already have good sites or booking. Not scare tactics, just what customers compare.",
     subject: "what customers see when they compare",
     body: `Hi {{first_name}},
 
@@ -391,7 +391,7 @@ I'm not a big agency with a glossy deck. I'm one developer who's very good at [y
 
 Here's the trade: give me [a small first project] for [a fair price]. If I don't earn the next step, we shake hands and part ways.
 
-I've already sketched [something concrete — e.g. the homepage layout for {{company}}]. Want to see it?
+I've already sketched [something concrete, e.g. the homepage layout for {{company}}]. Want to see it?
 
 {{signature}}`,
   },
@@ -413,7 +413,7 @@ That still bugs me. If {{hook}} matters to {{company}}, I'd genuinely love to he
     subject: "a slightly ridiculous offer",
     body: `Hi {{first_name}},
 
-Slightly ridiculous offer: give me [two weeks] to [a specific result] for {{company}}. If it works, we keep going. If it doesn't, I'll [a playful forfeit — buy the whole team lunch] and never email you again.
+Slightly ridiculous offer: give me [two weeks] to [a specific result] for {{company}}. If it works, we keep going. If it doesn't, I'll [a playful forfeit, e.g. buy the whole team lunch] and never email you again.
 
 I like those odds. Do you?
 
@@ -425,7 +425,7 @@ I like those odds. Do you?
     subject: "before [the busy season]",
     body: `Hi {{first_name}},
 
-If you want {{offer}} in place before [a real deadline — e.g. the December rush], now is the time to start, because a proper build takes [timeframe] to get right.
+If you want {{offer}} in place before [a real deadline, e.g. the December rush], now is the time to start, because a proper build takes [timeframe] to get right.
 
 I can have {{company}} up and running by [date]. Happy to show you the plan.
 
@@ -437,31 +437,31 @@ Quick chat this week?
   /* ── Follow-ups ────────────────────────────────────────────── */
   {
     id: "after-open", category: "Follow-up", angle: "Any thoughts on it?", step: "follow-up", channel: "email",
-    guidance: "They've opened your report or mock-up. Follow up now, while it's fresh — but don't mention tracking.",
+    guidance: "They've opened your report or mock-up. Follow up now, while it's fresh, but don't mention tracking.",
     subject: "Re: {{company}}",
     body: `Hi {{first_name}},
 
-Did you get a chance to look at what I sent over? Happy to walk you through it in 10 minutes, or answer anything by email — whatever's easier.
+Did you get a chance to look at what I sent over? Happy to walk you through it in 10 minutes or answer anything by email, whichever is easier.
 
 {{my_name}}`,
   },
   {
     id: "bump-short", category: "Follow-up", angle: "The one-line bump", step: "follow-up", channel: "email",
-    guidance: "Touch 2, 3–4 days after the first. One line, same thread.",
+    guidance: "Touch 2, 3-4 days after the first. One line, same thread.",
     subject: "Re: {{company}}",
-    body: `Hi {{first_name}}, just bumping this in case it got buried — still happy to send over the mock-up for {{company}}.
+    body: `Hi {{first_name}}, just bumping this in case it got buried. Still happy to send over the mock-up for {{company}}.
 
 {{my_name}}`,
   },
   {
     id: "bump-new-angle", category: "Follow-up", angle: "Add one new thing", step: "follow-up", channel: "email",
-    guidance: "Touch 3. Don't repeat yourself — bring something new: a second finding, an idea, a result.",
+    guidance: "Touch 3. Don't repeat yourself, bring something new: a second finding, an idea, a result.",
     subject: "one more idea for {{company}}",
     body: `Hi {{first_name}},
 
 One more idea, then I'll stop: [a second, different thing you'd improve for {{company}}].
 
-For most {{industry}} businesses the win is simple — this fixes "{{pain}}".
+For most {{industry}} businesses the win is simple: this fixes "{{pain}}".
 
 Worth a quick look?
 
@@ -469,11 +469,11 @@ Worth a quick look?
   },
   {
     id: "breakup", category: "Breakup", angle: "Graceful last touch", step: "breakup", channel: "email",
-    guidance: "Touch 4 or 5. Close the loop kindly — breakup emails often get the most replies.",
+    guidance: "Touch 4 or 5. Close the loop kindly. Breakup emails often get the most replies.",
     subject: "closing the loop, {{first_name}}",
     body: `Hi {{first_name}},
 
-I've reached out a couple of times without hearing back, which usually means the timing's off — or I didn't make it worth your while.
+I've reached out a couple of times without hearing back, which usually means the timing's off, or I didn't make it worth your while.
 
 Either way, I'll stop here so I'm not that person in your inbox. If {{hook}} becomes a priority for {{company}}, just reply to this and I'll pick it up.
 
@@ -492,11 +492,11 @@ All the best,
     id: "wa-nosite", category: "No website", angle: "WhatsApp: no website", step: "opener", channel: "whatsapp",
     guidance: "No website, has WhatsApp. The most common case for local businesses.",
     subject: "",
-    body: `Hello {{first_name}}, I came across {{company}} and noticed you don't have a website yet. I'd like to make you a free one-page preview with your services and a WhatsApp button — no obligation. Shall I?`,
+    body: `Hello {{first_name}}, I came across {{company}} and noticed you don't have a website yet. I'd like to make you a free one-page preview with your services and a WhatsApp button, no obligation. Shall I?`,
   },
   {
     id: "li-connect", category: "Peer", angle: "LinkedIn connection note", step: "opener", channel: "linkedin",
-    guidance: "Under 300 characters. No pitch in the note — just a reason to connect.",
+    guidance: "Under 300 characters. No pitch in the note, just a reason to connect.",
     subject: "",
     body: `Hi {{first_name}}, I work with {{industry}} businesses in {{country}} on {{offer}}. Would be good to connect.`,
   },
