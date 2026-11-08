@@ -21,7 +21,10 @@ export function firstName(full: string) {
 
 export function signOff(s: Settings) {
   if (s.signature.trim()) return s.signature.trim();
-  return [s.your_name, [s.role, s.business_name].filter(Boolean).join(", "), s.website, s.phone].filter(Boolean).join("\n");
+  // "Founder, Kymaa" + "Kymaa" should read "Founder, Kymaa", not "Founder, Kymaa, Kymaa".
+  const role = (s.role ?? "").trim(), biz = (s.business_name ?? "").trim();
+  const line = biz && role.toLowerCase().includes(biz.toLowerCase()) ? role : [role, biz].filter(Boolean).join(", ");
+  return [s.your_name, line, s.website, s.phone].filter(Boolean).join("\n");
 }
 
 const rank = (sev: string) => (sev === "high" ? 0 : sev === "medium" ? 1 : 2);

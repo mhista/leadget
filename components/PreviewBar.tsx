@@ -23,7 +23,7 @@ export function PreviewBar({ kind, name, backHref }: { kind: "mockup" | "report"
       a.download = `${name.replace(/[^\w]+/g, "-").toLowerCase()}-${kind}.jpg`;
       a.click();
     } catch {
-      setMsg("Couldn't make the image — use your browser's screenshot instead.");
+      setMsg("Couldn't make the image, use your browser's screenshot instead.");
     }
     setBusy(false);
   }
@@ -33,12 +33,12 @@ export function PreviewBar({ kind, name, backHref }: { kind: "mockup" | "report"
       <div className="flex flex-wrap items-center gap-1.5">
         <a href={backHref} className="rounded-xl px-3 py-2 text-white/70 hover:bg-white/10 hover:text-white">{kind === "invoice" ? "← Edit invoice" : "← Leadget"}</a>
         <span className="mx-1 h-5 w-px bg-white/15" />
-        <button onClick={() => { navigator.clipboard?.writeText(link); setMsg(local ? "Copied — but this link only opens on your computer. Deploy Leadget to share it." : "Link copied. Paste it into your message."); }}
+        <button onClick={() => { navigator.clipboard?.writeText(link); setMsg(local ? "Copied, but this link only opens on your computer. Deploy Leadget to share it." : "Link copied. Paste it into your message."); }}
           className={kind === "mockup" ? "rounded-xl bg-[#C8F04C] px-3 py-2 font-medium text-[#162008] hover:brightness-95" : "rounded-xl bg-[#0678FF] px-3 py-2 font-medium text-white hover:brightness-110"}>Copy share link</button>
         {kind === "mockup"
           ? <button onClick={saveImage} disabled={busy} className="rounded-xl px-3 py-2 hover:bg-white/10">{busy ? "Saving…" : "Save as image"}</button>
           : <button onClick={() => window.print()} className="rounded-xl px-3 py-2 hover:bg-white/10">Save as PDF</button>}
-        <span className="ml-auto hidden px-2 text-white/50 sm:inline">Your preview — not counted as a view</span>
+        <span className="ml-auto hidden px-2 text-white/50 sm:inline">Your preview, not counted as a view</span>
       </div>
       {msg && <p className="px-3 pb-1 pt-2 text-[12px] text-white/70">{msg}</p>}
     </div>

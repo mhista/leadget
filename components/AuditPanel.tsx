@@ -20,7 +20,7 @@ export function AuditPanel({ p }: { p: Prospect }) {
     start(async () => {
       const r = await runAudit(p.id);
       if (!r.ok) return toast(r.error, "error");
-      toast(`Audit done — ${r.data.audit?.issues.length ?? 0} issue${r.data.audit?.issues.length === 1 ? "" : "s"}.`);
+      toast(`Audit done, ${r.data.audit?.issues.length ?? 0} issue${r.data.audit?.issues.length === 1 ? "" : "s"}.`);
       router.refresh();
     });
   }
@@ -31,9 +31,9 @@ export function AuditPanel({ p }: { p: Prospect }) {
         <div className="flex items-start gap-4 p-5">
           <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-warning/15 text-warning"><IconZap /></span>
           <div>
-            <h2 className="text-[13.5px] font-semibold">No website — this is the opportunity</h2>
+            <h2 className="text-[13.5px] font-semibold">No website: this is the opportunity</h2>
             <p className="mt-1 max-w-[62ch] text-[12.5px] leading-relaxed text-muted">
-              {p.reviews ? `${p.reviews} people have reviewed ${p.name} on Google, so customers are already looking for them — and finding nothing to click. ` : ""}
+              {p.reviews ? `${p.reviews} people have reviewed ${p.name} on Google, so customers are already looking for them, and finding nothing to click. ` : ""}
               Lead with that. Offer a one-page mock-up with their name on it; it&apos;s the easiest yes you&apos;ll get.
             </p>
           </div>
@@ -109,7 +109,7 @@ export function AuditPanel({ p }: { p: Prospect }) {
               <p className="mono mb-2">How Google shows them</p>
               <p className="truncate text-[14px] text-info">{a.title || p.name}</p>
               <p className="truncate text-[12px] text-success">{(a.final_url || a.url).replace(/^https?:\/\//, "")}</p>
-              <p className="mt-0.5 line-clamp-2 text-[12.5px] text-muted">{a.description || <em>No description — Google picks some text from the page.</em>}</p>
+              <p className="mt-0.5 line-clamp-2 text-[12.5px] text-muted">{a.description || <em>No description, Google picks some text from the page.</em>}</p>
             </div>
           )}
 

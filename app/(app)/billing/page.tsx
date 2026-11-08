@@ -22,7 +22,7 @@ export default async function BillingPage({ searchParams }: { searchParams: Prom
         description={s.plan !== "free" && s.workspace.plan_expires_at
           ? `Renews around ${new Date(s.workspace.plan_expires_at).toLocaleDateString("en-GB", { day: "numeric", month: "long" })}. Credits reset on ${resets}.`
           : `Credits reset on ${resets}.`} />
-      {paid && <div className="mb-6"><Notice tone="success">Payment received — thank you. Your plan updates as soon as Paystack confirms it, usually within a minute. Refresh if it hasn&apos;t yet.</Notice></div>}
+      {paid && <div className="mb-6"><Notice tone="success">Payment received, thank you. Your plan updates as soon as Paystack confirms it, usually within a minute. Refresh if it hasn&apos;t yet.</Notice></div>}
 
       <section className="mb-8 grid gap-3 sm:grid-cols-3">
         {(["searches", "audits", "ai"] as const).map((k) => {

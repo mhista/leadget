@@ -118,13 +118,13 @@ export function PitchComposer({
   }
 
   async function copy(text: string) {
-    try { await navigator.clipboard.writeText(text); toast("Copied."); } catch { toast("Couldn't copy — select the text instead.", "error"); }
+    try { await navigator.clipboard.writeText(text); toast("Copied."); } catch { toast("Couldn't copy, select the text instead.", "error"); }
   }
 
   function open(channel: "email" | "whatsapp" | "linkedin", url: string) {
     const blanks = channel === "email" ? blanksEmail : blanksWa;
     if (blanks.length) {
-      toast(`Fill in ${blanks.length} [bracket]${blanks.length === 1 ? "" : "s"} first — they'd go out as-is.`, "error");
+      toast(`Fill in ${blanks.length} [bracket]${blanks.length === 1 ? "" : "s"} first, they'd go out as-is.`, "error");
       jumpToBlank(channel === "email" ? "email" : "whatsapp");
       return;
     }
@@ -201,7 +201,7 @@ export function PitchComposer({
 
       {/* Generate bar */}
       <div className="flex flex-wrap items-center gap-2 border-b border-line bg-sunken px-5 py-3">
-        <input value={angle} onChange={(e) => setAngle(e.target.value)} placeholder="Extra direction (optional) — e.g. mention I'm in Lagos too" className={clsx(inputCls, "min-w-[220px] flex-1 bg-surface")} />
+        <input value={angle} onChange={(e) => setAngle(e.target.value)} placeholder="Extra direction (optional), e.g. mention I'm in Lagos too" className={clsx(inputCls, "min-w-[220px] flex-1 bg-surface")} />
         {templates.length > 0 && (
           <select defaultValue="" onChange={(e) => { applyTemplate(e.target.value); e.target.value = ""; }} className={clsx(selectCls, "!w-auto bg-surface")}>
             <option value="">My templates…</option>
@@ -216,7 +216,7 @@ export function PitchComposer({
 
       <div className="p-5">
         {noProfile && !hasDraft && (
-          <div className="mb-4"><Notice tone="warning">Add your name, services and some proof in <a href="/settings" className="underline underline-offset-2">Settings</a> first — pitches read much better when they know who&apos;s sending them.</Notice></div>
+          <div className="mb-4"><Notice tone="warning">Add your name, services and some proof in <a href="/settings" className="underline underline-offset-2">Settings</a> first, pitches read much better when they know who&apos;s sending them.</Notice></div>
         )}
         {warning && <div className="mb-4"><Notice tone="warning">{warning}</Notice></div>}
 
@@ -231,14 +231,14 @@ export function PitchComposer({
             <p className="mx-auto mt-2 max-w-[52ch] text-[13px] text-muted">
               {p.audit || !p.website
                 ? "Pick a suggested angle above, or press “Write my pitch”. Edit anything that doesn't sound like you."
-                : "Tip: audit their website first (below) — the pitch will open with something true about their business instead of a generic line."}
+                : "Tip: audit their website first (below). The pitch will open with something true about their business instead of a generic line."}
             </p>
           </div>
         ) : tab === "email" ? (
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-[12.5px]">
               <span className="w-14 shrink-0 text-muted">To</span>
-              <span className={clsx("truncate", !p.email && "text-warning")}>{p.email || "No email yet — add one, or send on WhatsApp/LinkedIn instead"}</span>
+              <span className={clsx("truncate", !p.email && "text-warning")}>{p.email || "No email yet. Add one, or send on WhatsApp/LinkedIn instead"}</span>
               <span className="ml-auto flex shrink-0 items-center gap-1.5">
                 {d.angle && <span className="rounded-pill bg-brand/10 px-2 py-0.5 text-[11px] text-brand">{d.angle}</span>}
                 {d.by && <span className="rounded-pill bg-page-alt px-2 py-0.5 text-[11px] text-muted">{d.by === "ai" ? "AI draft" : d.by === "template" ? "From template" : "Playbook draft"}</span>}
@@ -276,7 +276,7 @@ export function PitchComposer({
           </div>
         ) : (
           <ol className="space-y-3">
-            {d.followups.length === 0 && <p className="text-[13px] text-muted">Write a pitch to get a 3-step follow-up sequence — or pick a follow-up angle from the swipe file.</p>}
+            {d.followups.length === 0 && <p className="text-[13px] text-muted">Write a pitch to get a 3-step follow-up sequence, or pick a follow-up angle from the swipe file.</p>}
             {d.followups.map((f, i) => (
               <li key={i} className="rounded-lg border border-line p-4">
                 <div className="mb-2 flex items-center justify-between gap-3">

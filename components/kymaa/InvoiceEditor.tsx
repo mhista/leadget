@@ -110,7 +110,7 @@ export function InvoiceEditor({ inv, settings, clients }: { inv: Invoice; settin
         </div>
         <div className="flex flex-wrap gap-2">
           {t.status !== "paid" && t.total > 0 && <button onClick={markPaid} disabled={busy} className={btn("secondary", "md")}><IconCheck className="h-3.5 w-3.5" /> Mark as paid</button>}
-          <button onClick={() => { navigator.clipboard?.writeText(link); toast(d.status === "draft" ? "Copied — but drafts don't open for clients. Set the status to Auto first." : "Invoice link copied."); }} className={btn("secondary", "md")}><IconCopy className="h-3.5 w-3.5" /> Copy link</button>
+          <button onClick={() => { navigator.clipboard?.writeText(link); toast(d.status === "draft" ? "Copied, but drafts don't open for clients. Set the status to Auto first." : "Invoice link copied."); }} className={btn("secondary", "md")}><IconCopy className="h-3.5 w-3.5" /> Copy link</button>
           <button onClick={() => (dirty ? save(() => window.open(`/i/${inv.share_id}?preview=1`, "_blank")) : window.open(`/i/${inv.share_id}?preview=1`, "_blank"))} className={btn("secondary", "md")}><IconExternal className="h-3.5 w-3.5" /> Preview & PDF</button>
           <button onClick={() => save()} disabled={busy || !dirty} className={btn("primary", "md")}>{busy && <Spinner />}Save</button>
         </div>
@@ -223,7 +223,7 @@ export function InvoiceEditor({ inv, settings, clients }: { inv: Invoice; settin
               <Field label="Account number"><input className={clsx(inputCls, "num")} value={d.payment.accountNumber} onChange={(e) => set("payment", { ...d.payment, accountNumber: e.target.value })} /></Field>
               <Field label="Sort / SWIFT"><input className={inputCls} value={d.payment.swift} placeholder="Optional" onChange={(e) => set("payment", { ...d.payment, swift: e.target.value })} /></Field>
             </div>
-            <Field label="Pay-online link" hint="Paystack, Flutterwave or Stripe payment link — adds a “Pay online” button."><input className={inputCls} value={d.payment.link} placeholder="https://paystack.com/pay/…" onChange={(e) => set("payment", { ...d.payment, link: e.target.value })} /></Field>
+            <Field label="Pay-online link" hint="Paystack, Flutterwave or Stripe payment link, adds a “Pay online” button."><input className={inputCls} value={d.payment.link} placeholder="https://paystack.com/pay/…" onChange={(e) => set("payment", { ...d.payment, link: e.target.value })} /></Field>
           </Section>
 
           <Section title="From, terms & notes">

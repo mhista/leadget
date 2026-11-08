@@ -26,7 +26,7 @@ export function BillingPlans({ plans, current, canManage }: { plans: Plan[]; cur
               <h3 className="text-[15px] font-semibold">{p.name}</h3>
               <p className="mt-1 text-[12.5px] text-muted">{p.blurb}</p>
               <p className="mt-5"><span className="display num text-[2.4rem]">${p.price_usd}</span><span className="text-[13px] text-muted"> /month</span></p>
-              {p.price_ngn > 0 && <p className="text-[12px] text-faint">≈ ₦{p.price_ngn.toLocaleString()} — charged by Paystack</p>}
+              {p.price_ngn > 0 && <p className="text-[12px] text-faint">≈ ₦{p.price_ngn.toLocaleString()}, charged by Paystack</p>}
               <ul className="mt-5 flex-1 space-y-2 text-[13px]">
                 {p.features.map((f) => <li key={f} className="flex gap-2"><IconCheck className="mt-0.5 h-4 w-4 shrink-0 text-brand" />{f}</li>)}
               </ul>

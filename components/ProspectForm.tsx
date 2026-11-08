@@ -56,7 +56,7 @@ export function ProspectFormModal({ open, onClose, prospect }: { open: boolean; 
               {PLAYBOOKS.map((p) => <option key={p.id} value={p.id}>{p.emoji} {p.label}</option>)}
             </select>
           </Field>
-          <Field label="Website" hint="Leave empty if they don't have one — that's a pitch in itself.">
+          <Field label="Website" hint="Leave empty if they don't have one. That's a pitch in itself.">
             <input className={inputCls} value={f.website} onChange={(e) => set("website", e.target.value)} placeholder="acme.com" />
           </Field>
           <Field label="Size">

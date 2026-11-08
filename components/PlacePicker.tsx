@@ -241,7 +241,7 @@ function CityPanel({
             </button>
           </li>
         ))}
-        {!countryCode && !q && <li className="px-3 py-5 text-center text-[12.5px] text-muted">Pick a country first for suggestions — or type any place.</li>}
+        {!countryCode && !q && <li className="px-3 py-5 text-center text-[12.5px] text-muted">Pick a country first for suggestions, or type any place.</li>}
         {countryCode && !loading && !items.length && <li className="px-3 py-5 text-center text-[12.5px] text-muted">Start typing to search.</li>}
       </ul>
     </div>

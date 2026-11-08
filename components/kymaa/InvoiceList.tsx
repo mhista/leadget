@@ -57,7 +57,7 @@ export function InvoiceList({ invoices, names, settings, missingBank }: { invoic
     return (
       <>
         {missingBank && <div className="mb-5"><Notice tone="warning">Add your bank details in <Link href="/settings#documents" className="underline">Settings → Brand &amp; documents</Link> first, so every invoice says how to pay you.</Notice></div>}
-        <Empty icon={<IconReceipt />} title="No invoices yet" body="Start one here, or from a prospect's page once they say yes — their name, contact and deal value come across." action={<NewInvoiceButton />} />
+        <Empty icon={<IconReceipt />} title="No invoices yet" body="Start one here, or from a prospect's page once they say yes. Their name, contact and deal value come across." action={<NewInvoiceButton />} />
       </>
     );
   }

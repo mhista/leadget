@@ -44,7 +44,7 @@ const NO_RF: ResultFilters = { website: "all", phone: false, email: false, ratin
 function angleFor(r: Row) {
   if (!r.website && (r.reviews ?? 0) >= 10) return { label: "No site, but reviewed", tone: "text-warning" };
   if (!r.website) return { label: "Offer a mock-up", tone: "text-warning" };
-  if (r.website.startsWith("http://")) return { label: "Not secure — lead with it", tone: "text-danger" };
+  if (r.website.startsWith("http://")) return { label: "Not secure: lead with it", tone: "text-danger" };
   if ((r.reviews ?? 0) >= 100) return { label: "Compliment the reviews", tone: "text-success" };
   return { label: "Audit first", tone: "text-muted" };
 }
@@ -152,7 +152,7 @@ export function FindLeads({ google, defaultIndustry, defaultCountry }: { google:
         </div>
         <div className="grid gap-4 p-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_minmax(0,1fr)_auto] lg:items-end">
           <Field label="Country">
-            <CountrySelect value={country} onChange={(c) => { setCountry(c?.name ?? ""); setCities([]); }} placeholder="Anywhere — pick a country" />
+            <CountrySelect value={country} onChange={(c) => { setCountry(c?.name ?? ""); setCities([]); }} placeholder="Anywhere, pick a country" />
           </Field>
           <Field label="Cities or areas" hint="Search up to 8 at once.">
             <CityMulti country={country} value={cities} onChange={setCities} placeholder={country ? `Search ${country}…` : "Pick a country for suggestions"} />

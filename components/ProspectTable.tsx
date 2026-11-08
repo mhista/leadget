@@ -164,7 +164,7 @@ export function ProspectTable({
         <Empty
           icon={<IconUsers className="h-5 w-5" />}
           title="No prospects yet"
-          body="Search a city for real estate agents, pharmacies, clinics or law firms — or add a business you already have in mind."
+          body="Search a city for real estate agents, pharmacies, clinics or law firms, or add a business you already have in mind."
           action={<>
             <Link href="/find" className={btn("accent", "md")}><IconSearch /> Find leads</Link>
             <button onClick={() => setAdding(true)} className={btn("secondary", "md")}><IconPlus /> Add one by hand</button>
@@ -234,7 +234,7 @@ export function ProspectTable({
                 {bulkAngle && (
                   <p className="mt-2 flex flex-wrap items-center gap-1.5 text-[12px] text-muted">
                     <IconSparkle className="h-3.5 w-3.5 text-brand" />
-                    Suggested opener for {bulkAngle.n === selected.length ? "these" : `${bulkAngle.n} of these`}: <span className="font-medium text-ink">{bulkAngle.label}</span> — {bulkAngle.reason.toLowerCase()}.
+                    Suggested opener for {bulkAngle.n === selected.length ? "these" : `${bulkAngle.n} of these`}: <span className="font-medium text-ink">{bulkAngle.label}</span>, {bulkAngle.reason.toLowerCase()}.
                     <Link href={`/prospects/${bulkAngle.first}?angle=${bulkAngle.id}`} className="font-medium text-brand hover:underline">Start with the first →</Link>
                   </p>
                 )}

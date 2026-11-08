@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const found = await loadSharedInvoice((await params).id);
   return {
-    title: { absolute: found ? `Invoice ${found.inv.doc.number} — ${found.inv.doc.from.name || "Kymaa"}` : "Invoice" },
+    title: { absolute: found ? `Invoice ${found.inv.doc.number}, ${found.inv.doc.from.name || "Kymaa"}` : "Invoice" },
     robots: { index: false, follow: false },
     icons: { icon: "/brand/logo/kymaa-favicon.svg", apple: "/brand/logo/kymaa-app-icon-180.png" },
   };

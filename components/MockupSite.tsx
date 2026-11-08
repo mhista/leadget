@@ -105,7 +105,7 @@ export function MockupSite({ p, m, s, preview }: { p: Prospect; m: Mockup; s: Se
               <p style={display} className="text-[1.6rem] leading-tight">Quick enquiry</p>
               <p className="mt-1 text-[13.5px] text-[var(--m-muted)]">We usually reply within the hour.</p>
               <div className="mt-6 space-y-3">
-                {["Your name", "Phone or WhatsApp", `What do you need${p.industry === "real-estate" ? " — buy, rent or sell?" : "?"}`].map((f) => (
+                {["Your name", "Phone or WhatsApp", `What do you need${p.industry === "real-estate" ? ": buy, rent or sell?" : "?"}`].map((f) => (
                   <div key={f} className="rounded-xl border border-[var(--m-line)] bg-[var(--m-bg)] px-4 py-3 text-[14px] text-[var(--m-muted)]">{f}</div>
                 ))}
               </div>

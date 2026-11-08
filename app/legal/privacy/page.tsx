@@ -14,7 +14,7 @@ export default function Privacy() {
       <h2>How we use it</h2>
       <p>To run the service, keep your account secure, bill you, and answer support requests. We don&apos;t sell your data or use your workspace content to train AI models.</p>
       <h2>Processors</h2>
-      <p>Supabase (hosting and database), Vercel (hosting), Paystack (payments), Groq (AI pitch writing — the prospect details needed for a pitch are sent when you ask for one), Google (Places search).</p>
+      <p>Supabase (hosting and database), Vercel (hosting), Paystack (payments), Groq (AI pitch writing, the prospect details needed for a pitch are sent when you ask for one), Google (Places search).</p>
       <h2>Your rights</h2>
       <p>You can export or delete your data at any time, or ask us to, at <mark>[support email]</mark>. Deleting your account removes your workspace within <mark>[30]</mark> days.</p>
     </LegalPage>

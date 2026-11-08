@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const found = await loadShared((await params).id);
   const brand = found?.s.business_name || "Kymaa";
   return {
-    title: { absolute: found ? `Website check: ${found.p.name} — ${brand}` : "Website check" },
+    title: { absolute: found ? `Website check: ${found.p.name}, ${brand}` : "Website check" },
     robots: { index: false, follow: false },
     icons: { icon: "/brand/logo/kymaa-favicon.svg", apple: "/brand/logo/kymaa-app-icon-180.png" },
   };

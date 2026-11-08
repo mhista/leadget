@@ -6,7 +6,7 @@ import { btn } from "@/components/ui";
 import { Logo, IconCheck, IconGlobe, IconSearch, IconSparkle, IconClock, IconZap, IconArrowRight, IconStar, IconMail } from "@/components/icons";
 
 export const metadata = {
-  title: "Leadget — find businesses that need what you build",
+  title: "Leadget, find businesses that need what you build",
   description: "Search any city for businesses with no website or a broken one, see exactly what to fix, and pitch them with an angle that fits.",
   robots: { index: true, follow: true },
 };
@@ -64,14 +64,14 @@ function Preview() {
 export default function Welcome() {
   const features = [
     { icon: <IconSearch />, title: "Find", body: "Pick an industry and any city in 240+ countries. Search several areas at once. Businesses with no website are flagged straight away." },
-    { icon: <IconGlobe />, title: "Audit", body: "One click checks their site the way a customer would — speed, security, phones, how to get in touch — and tells you what to say about it." },
+    { icon: <IconGlobe />, title: "Audit", body: "One click checks their site the way a customer would, speed, security, phones, how to get in touch, and tells you what to say about it." },
     { icon: <IconSparkle />, title: "Pitch", body: `${SWIPE_CATEGORIES.length} angles in the swipe file, suggested per lead, or written by AI from the audit. Sent from your own inbox, not ours.` },
     { icon: <IconClock />, title: "Follow up", body: "Every message you log books the next touch. A pipeline, reminders and a daily list, so nobody slips through." },
   ];
   const faqs = [
-    ["Does Leadget send emails for me?", "No — on purpose. It opens Gmail, Outlook or WhatsApp with the message ready, and you press send. Messages come from your real address, which gets far more replies and keeps your domain out of spam folders."],
+    ["Does Leadget send emails for me?", "No, on purpose. It opens Gmail, Outlook or WhatsApp with the message ready, and you press send. Messages come from your real address, which gets far more replies and keeps your domain out of spam folders."],
     ["Where do the businesses come from?", "Google Maps listings (names, websites, phone numbers, reviews), with OpenStreetMap as a backup. Emails come from the business's own website during the audit, or from a CSV you import."],
-    ["Who is it for?", "Freelancers and small agencies who sell websites, apps, marketing or software to businesses — anywhere in the world."],
+    ["Who is it for?", "Freelancers and small agencies who sell websites, apps, marketing or software to businesses, anywhere in the world."],
     ["Can I cancel?", "Any time, from the Billing page. You keep your plan until the end of the period you paid for, then drop to Free. Your data stays."],
     ["Is my list private?", "Yes. Every workspace is separate, and nobody else can see your prospects, notes or templates."],
   ];
@@ -101,10 +101,10 @@ export default function Welcome() {
             Find the businesses that <em className="italic text-brand">need what you build.</em>
           </h1>
           <p className="mx-auto mt-6 max-w-[54ch] text-[16px] leading-relaxed text-muted">
-            Search any city for real estate agencies, pharmacies, clinics or law firms. See who has no website — or a broken one — and pitch them with an angle that actually fits.
+            Search any city for real estate agencies, pharmacies, clinics or law firms. See who has no website, or a broken one, and pitch them with an angle that actually fits.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link href="/signup" className={btn("accent", "lg")}>Start free — no card <IconArrowRight /></Link>
+            <Link href="/signup" className={btn("accent", "lg")}>Start free, no card <IconArrowRight /></Link>
             <a href="#how" className={btn("secondary", "lg")}>See how it works</a>
           </div>
         </div>
@@ -160,7 +160,7 @@ export default function Welcome() {
             <p className="mono">The swipe file</p>
             <h2 className="display mt-2 text-[clamp(2rem,1.4rem+2vw,3rem)]">Openers that don&apos;t read like cold email.</h2>
             <p className="mt-4 max-w-[48ch] text-[15px] leading-relaxed text-muted">
-              Every angle comes filled in for the lead you&apos;re writing to — their name, their city, the exact problem on their website. The parts only you can write are highlighted, and Leadget won&apos;t let you send them blank.
+              Every angle comes filled in for the lead you&apos;re writing to, their name, their city, the exact problem on their website. The parts only you can write are highlighted, and Leadget won&apos;t let you send them blank.
             </p>
             <div className="mt-6 flex flex-wrap gap-1.5">
               {SWIPE_CATEGORIES.map((c) => <span key={c} className="rounded-pill border border-brand/25 bg-brand/[.06] px-2.5 py-1 font-mono text-[10.5px] uppercase tracking-wide text-brand">{c}</span>)}
@@ -171,7 +171,7 @@ export default function Welcome() {
             <p className="mt-3 text-[13px]"><span className="text-muted">Subject:</span> <span className="font-medium">a quick thing on Harbour Point&apos;s website</span></p>
             <div className="mt-3 space-y-3 text-[13.5px] leading-relaxed">
               <p>Hi Tunde,</p>
-              <p>I had a look at Harbour Point&apos;s website this morning. On a phone it shows the desktop page shrunk down — and most of your visitors are on phones.</p>
+              <p>I had a look at Harbour Point&apos;s website this morning. On a phone it shows the desktop page shrunk down, and most of your visitors are on phones.</p>
               <p>It&apos;s a fixable problem, and usually not a big one. I help real estate businesses with <mark className="rounded-sm bg-warning/15 px-0.5 text-warning">[your offer]</mark>.</p>
               <p>Happy to send over the three changes I&apos;d make, no charge. Want them?</p>
             </div>

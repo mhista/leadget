@@ -55,7 +55,7 @@ export function MockupEditor({ p, settings, onClose, onSaved }: { p: Prospect; s
           <button onClick={onClose} className="grid h-9 w-9 place-items-center rounded-md text-muted hover:bg-page-alt hover:text-ink" aria-label="Close"><IconX /></button>
           <div className="min-w-0">
             <p className="truncate text-[14px] font-semibold">Mock-up for {p.name}</p>
-            <p className="text-[11.5px] text-muted">Pre-written for {p.industry.replace("-", " ")} — edit anything, then save and share.</p>
+            <p className="text-[11.5px] text-muted">Pre-written for {p.industry.replace("-", " ")}, edit anything, then save and share.</p>
           </div>
         </div>
         <div className="flex items-center gap-2">

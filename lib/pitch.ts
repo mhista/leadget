@@ -1,7 +1,7 @@
 import "server-only";
 import type { Pitch, Prospect, Settings, Template } from "@/lib/types";
 import { playbook } from "@/lib/industries";
-import { groqChat, groqConfigured } from "@/lib/ai/groq";
+import { groqChat, groqConfigured, jsonFrom } from "@/lib/ai/groq";
 import { firstName, signOff } from "@/lib/render";
 
 /**
@@ -163,7 +163,7 @@ Return JSON only: {"subject": string, "body": string, "whatsapp": string, "follo
   });
   if (!res.ok) return res;
   try {
-    const j = JSON.parse(res.text);
+    const j = jsonFrom(res.text);
     if (typeof j.subject !== "string" || typeof j.body !== "string") throw new Error("shape");
     return {
       ok: true,

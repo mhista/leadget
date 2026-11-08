@@ -205,7 +205,7 @@ export function ProspectView({
                   })}
                 </ul>
               )}
-              {!invoices.length && <p className="mb-3 text-[12.5px] text-muted">They&apos;re close. Have the invoice ready — name, contact and deal value come across.</p>}
+              {!invoices.length && <p className="mb-3 text-[12.5px] text-muted">They&apos;re close. Have the invoice ready: name, contact and deal value come across.</p>}
               <NewInvoiceButton prospectId={p.id} size="sm" label={invoices.length ? "Another invoice" : "Create invoice"} />
             </Card>
           )}

@@ -12,7 +12,7 @@ export function AuthShell({ title, sub, children, footer }: { title: string; sub
         <div className="relative max-w-md">
           <p className="display text-[2.6rem] leading-[1.05]">Find the businesses that need what you build.</p>
           <ul className="mt-8 space-y-3 text-[14px] text-rail-muted">
-            {["Search any city for real estate, clinics, pharmacies, law firms…", "See exactly what's broken on their website", "Pitch with an angle that fits — and follow up on time"].map((t) => (
+            {["Search any city for real estate, clinics, pharmacies, law firms…", "See exactly what's broken on their website", "Pitch with an angle that fits, and follow up on time"].map((t) => (
               <li key={t} className="flex gap-3"><span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-accent text-accent-ink"><IconCheck className="h-3 w-3" /></span>{t}</li>
             ))}
           </ul>

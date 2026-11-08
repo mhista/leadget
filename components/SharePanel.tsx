@@ -39,7 +39,7 @@ export function SharePanel({ p, settings }: { p: Prospect; settings: Settings })
   const mockupUrl = p.share_id && p.mockup ? `${base}/m/${p.share_id}` : null;
 
   function copy(url: string) {
-    navigator.clipboard?.writeText(url).then(() => toast(local ? "Copied — note this link only opens on your computer until Leadget is deployed." : "Link copied."));
+    navigator.clipboard?.writeText(url).then(() => toast(local ? "Copied, note this link only opens on your computer until Leadget is deployed." : "Link copied."));
   }
 
   function makeReport() {
@@ -86,7 +86,7 @@ export function SharePanel({ p, settings }: { p: Prospect; settings: Settings })
             <div className="min-w-0">
               <p className="text-[13.5px] font-medium">Website report</p>
               <p className="text-[12px] leading-snug text-muted">
-                {!p.website ? "They have no website — send a mock-up instead." : reportUrl ? `Graded ${p.audit?.issues.length ?? 0} issues${ps ? ` · speed ${ps.performance}/100` : ""}. ${p.report ? "Edited" : "Ready"} to share.` : "A graded check of their site in your Kymaa design, with the fixes and your plan."}
+                {!p.website ? "They have no website, send a mock-up instead." : reportUrl ? `Graded ${p.audit?.issues.length ?? 0} issues${ps ? ` · speed ${ps.performance}/100` : ""}. ${p.report ? "Edited" : "Ready"} to share.` : "A graded check of their site in your Kymaa design, with the fixes and your plan."}
               </p>
             </div>
           </div>

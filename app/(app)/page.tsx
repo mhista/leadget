@@ -132,7 +132,7 @@ export default async function Overview() {
         <Kpi label="Prospects" value={prospects.length.toLocaleString()} sub={`${prospects.filter((p) => p.stage === "new").length} not looked at yet`} icon={<IconTarget />} delay={0} />
         <Kpi label="Outreach this week" value={String(weekCount)} sub={`Goal ${goal * 5} a week`} icon={<IconZap />} delay={1} />
         <Kpi label="Reply rate" value={replyRate == null ? "—" : `${replyRate}%`} sub={`${responded.length} of ${contacted.length} contacted`} icon={<IconChat />} delay={2} />
-        <Kpi label="Open pipeline" value={money(openValue, cur)} sub={wonValue ? `${money(wonValue, cur)} won` : "Nothing won yet — soon"} icon={<IconSparkle />} delay={3} accent />
+        <Kpi label="Open pipeline" value={money(openValue, cur)} sub={wonValue ? `${money(wonValue, cur)} won` : "Nothing won yet, soon"} icon={<IconSparkle />} delay={3} accent />
       </section>
 
       <div className="grid gap-6 xl:grid-cols-[1.35fr_1fr]">
@@ -312,7 +312,7 @@ function FeedRow({ a, p }: { a: Activity; p?: Prospect }) {
       <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-page-alt text-muted">{FEED_ICON[a.type]}</span>
       <p className="min-w-0 flex-1 truncate">
         {p ? <Link href={`/prospects/${p.id}`} className="font-medium hover:underline">{p.name}</Link> : <span className="text-muted">Deleted prospect</span>}
-        <span className="text-muted"> — {a.body.split("\n")[0]}</span>
+        <span className="text-muted">, {a.body.split("\n")[0]}</span>
       </p>
       <span className="shrink-0 text-[12px] text-faint">{ago(a.created_at)}</span>
     </li>

@@ -22,7 +22,7 @@ const Or = () => <div className="my-5 flex items-center gap-3 text-[11.5px] text
 export function SignInForm({ next, google }: { next: string; google: boolean }) {
   const [state, action, pending] = useActionState(signIn, {});
   const [magic, setMagic] = useState(false);
-  if (state.sent) return <Notice tone="success">Check your inbox — we sent a sign-in link. It expires in an hour.</Notice>;
+  if (state.sent) return <Notice tone="success">Check your inbox. We sent a sign-in link. It expires in an hour.</Notice>;
   return (
     <>
       {google && <><GoogleButton /><Or /></>}
@@ -42,7 +42,7 @@ export function SignInForm({ next, google }: { next: string; google: boolean }) 
 
 export function SignUpForm({ google }: { google: boolean }) {
   const [state, action, pending] = useActionState(signUp, {});
-  if (state.sent) return <Notice tone="success">Almost there — confirm your email with the link we just sent, and you'll land straight in Leadget.</Notice>;
+  if (state.sent) return <Notice tone="success">Almost there. Confirm your email with the link we just sent, and you'll land straight in Leadget.</Notice>;
   return (
     <>
       {google && <><GoogleButton /><Or /></>}

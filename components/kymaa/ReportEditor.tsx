@@ -74,7 +74,7 @@ export function ReportEditor({ p, settings, onClose, onSaved }: { p: Prospect; s
           <button onClick={onClose} className="grid h-9 w-9 place-items-center rounded-md text-muted hover:bg-page-alt hover:text-ink" aria-label="Close"><IconX /></button>
           <div className="min-w-0">
             <p className="truncate text-[14px] font-semibold">Website report · {p.name}</p>
-            <p className="text-[11.5px] text-muted">{p.report ? "Your edited version" : "Written from the latest check"} — change anything, then save.</p>
+            <p className="text-[11.5px] text-muted">{p.report ? "Your edited version" : "Written from the latest check"}, change anything, then save.</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -125,7 +125,7 @@ export function ReportEditor({ p, settings, onClose, onSaved }: { p: Prospect; s
 
             {tab === "fix" && (
               <>
-                <p className="text-[12px] text-muted">Keep 3–7, most costly first. <b>Why</b> says what it costs them; <b>the fix</b> starts with a verb.</p>
+                <p className="text-[12px] text-muted">Keep 3-7, most costly first. <b>Why</b> says what it costs them; <b>the fix</b> starts with a verb.</p>
                 {d.issues.map((it, i) => (
                   <div key={i} className="rounded-lg border border-line p-3">
                     <div className="flex gap-2">
@@ -144,8 +144,8 @@ export function ReportEditor({ p, settings, onClose, onSaved }: { p: Prospect; s
                       </span>
                     </div>
                     <div className="mt-2 space-y-2 pl-8">
-                      <textarea rows={2} className={clsx(inputCls, "text-[12.5px]")} value={it.why} placeholder="Why it matters — what it costs them" onChange={(e) => setIssue(i, { why: e.target.value })} />
-                      <textarea rows={2} className={clsx(inputCls, "text-[12.5px]")} value={it.fix} placeholder="The fix — one concrete action" onChange={(e) => setIssue(i, { fix: e.target.value })} />
+                      <textarea rows={2} className={clsx(inputCls, "text-[12.5px]")} value={it.why} placeholder="Why it matters, what it costs them" onChange={(e) => setIssue(i, { why: e.target.value })} />
+                      <textarea rows={2} className={clsx(inputCls, "text-[12.5px]")} value={it.fix} placeholder="The fix, one concrete action" onChange={(e) => setIssue(i, { fix: e.target.value })} />
                     </div>
                   </div>
                 ))}
@@ -155,7 +155,7 @@ export function ReportEditor({ p, settings, onClose, onSaved }: { p: Prospect; s
 
             {tab === "working" && (
               <>
-                <p className="text-[12px] text-muted">Two to six things they're doing right — it makes the rest land better.</p>
+                <p className="text-[12px] text-muted">Two to six things they're doing right. It makes the rest land better.</p>
                 {d.wins.map((w, i) => (
                   <div key={i} className="flex gap-2">
                     <div className="flex-1 space-y-1.5">
@@ -173,7 +173,7 @@ export function ReportEditor({ p, settings, onClose, onSaved }: { p: Prospect; s
               <>
                 <Field label="Plan title"><input className={inputCls} value={d.planTitle} onChange={(e) => up({ planTitle: e.target.value })} /></Field>
                 <div>
-                  <p className="mb-1.5 text-[12px] font-medium">What you'd build <span className="font-normal text-faint">— 2–4, specific to their industry</span></p>
+                  <p className="mb-1.5 text-[12px] font-medium">What you'd build <span className="font-normal text-faint">— 2-4, specific to their industry</span></p>
                   <div className="space-y-3">
                     {d.recommendations.map((r, i) => (
                       <div key={i} className="flex gap-2">

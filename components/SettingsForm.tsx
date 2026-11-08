@@ -48,7 +48,7 @@ export function SettingsForm({ settings, status }: { settings: Settings; status:
         <Section title="About you" sub="Used to sign and frame every message.">
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Your name"><input className={inputCls} value={s.your_name} onChange={(e) => set("your_name", e.target.value)} placeholder="Diwe" /></Field>
-            <Field label="Business name" hint="Optional — your studio or brand."><input className={inputCls} value={s.business_name} onChange={(e) => set("business_name", e.target.value)} /></Field>
+            <Field label="Business name" hint="Optional, your studio or brand."><input className={inputCls} value={s.business_name} onChange={(e) => set("business_name", e.target.value)} /></Field>
             <Field label="What you are"><input className={inputCls} value={s.role} onChange={(e) => set("role", e.target.value)} placeholder="Flutter & web developer" /></Field>
             <Field label="Email you send from"><input type="email" className={inputCls} value={s.sender_email} onChange={(e) => set("sender_email", e.target.value)} /></Field>
             <Field label="Phone / WhatsApp"><input className={inputCls} value={s.phone} onChange={(e) => set("phone", e.target.value)} /></Field>
@@ -56,7 +56,7 @@ export function SettingsForm({ settings, status }: { settings: Settings; status:
             <Field label="Leadget's public address" hint="Where report and mock-up links point once you deploy Leadget, e.g. https://leadget-diwe.vercel.app. Leave empty while running on your computer." className="sm:col-span-2">
               <input className={inputCls} value={s.public_url} onChange={(e) => set("public_url", e.target.value.trim())} placeholder="https://…" />
             </Field>
-            <Field label="Booking link" hint="Calendly, Cal.com — used as the call to action." className="sm:col-span-2"><input className={inputCls} value={s.booking_link} onChange={(e) => set("booking_link", e.target.value)} placeholder="https://cal.com/you/15min" /></Field>
+            <Field label="Booking link" hint="Calendly or Cal.com, used as the call to action." className="sm:col-span-2"><input className={inputCls} value={s.booking_link} onChange={(e) => set("booking_link", e.target.value)} placeholder="https://cal.com/you/15min" /></Field>
           </div>
         </Section>
 
@@ -74,16 +74,16 @@ export function SettingsForm({ settings, status }: { settings: Settings; status:
           </div>
           <Field label="Proof" hint="One or two real results, in plain words. This is the line that makes people reply. Never invent it.">
             <textarea rows={4} className={clsx(inputCls, "leading-relaxed")} value={s.proof} onChange={(e) => set("proof", e.target.value)}
-              placeholder="e.g. I recently rebuilt the website for a Lagos law firm — it now works on phones, loads in under two seconds, and their enquiries come through a proper intake form." />
+              placeholder="e.g. I recently rebuilt the website for a Lagos law firm. It now works on phones, loads in under two seconds, and their enquiries come through a proper intake form." />
           </Field>
           <Field label="Email signature" hint="Leave empty to build one from the fields above." className="mt-4">
             <textarea rows={4} className={clsx(inputCls, "font-mono text-[12.5px]")} value={s.signature} onChange={(e) => set("signature", e.target.value)} />
           </Field>
           <Field label="Tone" className="mt-4 max-w-xs">
             <select className={selectCls} value={s.tone} onChange={(e) => set("tone", e.target.value as Settings["tone"])}>
-              <option value="warm">Warm — friendly, human</option>
-              <option value="direct">Direct — short, to the point</option>
-              <option value="formal">Formal — for law, finance, corporate</option>
+              <option value="warm">Warm: friendly, human</option>
+              <option value="direct">Direct: short, to the point</option>
+              <option value="formal">Formal: for law, finance, corporate</option>
             </select>
           </Field>
         </Section>
@@ -92,7 +92,7 @@ export function SettingsForm({ settings, status }: { settings: Settings; status:
           <div className="mb-5 flex items-center gap-4 rounded-lg bg-[#00244E] p-4 text-[#F2F0EA]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/brand/logo/kymaa-wordmark-light.svg" alt="Kymaa" className="h-5 w-auto" />
-            <p className="text-[12px] text-[#9DB0C8]">Reports and invoices use the Kymaa design — navy, Signal blue, the cut corner.</p>
+            <p className="text-[12px] text-[#9DB0C8]">Reports and invoices use the Kymaa design: navy, Signal blue, the cut corner.</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Legal name" hint="Shown under the logo on invoices."><input className={inputCls} value={s.legal_name} onChange={(e) => set("legal_name", e.target.value)} placeholder="Kymaa Digital Solutions" /></Field>
@@ -173,7 +173,7 @@ export function SettingsForm({ settings, status }: { settings: Settings; status:
                 {CURRENCIES.map((c) => <option key={c}>{c}</option>)}
               </select>
             </Field>
-            <Field label="Daily outreach goal" hint="10–20 personal messages a day is a strong pace.">
+            <Field label="Daily outreach goal" hint="10-20 personal messages a day is a strong pace.">
               <input type="number" min={1} max={200} className={inputCls} value={s.daily_goal} onChange={(e) => set("daily_goal", Number(e.target.value) || 10)} />
             </Field>
           </div>
@@ -194,10 +194,10 @@ export function SettingsForm({ settings, status }: { settings: Settings; status:
                 <p className="text-[12px] text-muted">Set in <code className="rounded bg-page-alt px-1">.env.local</code>, then restart.</p>
               </div>
               <ul id="keys" className="space-y-3.5 text-[12.5px]">
-                <Status ok={status.ai} title="AI pitches (Groq)" on={`On · ${status.model}`} off="Off — pitches use the playbook writer. Free key at console.groq.com → GROQ_API_KEY" />
-                <Status ok={status.google} title="Google Places search" on="On — best business data" off="Off — using OpenStreetMap. Enable “Places API (New)” in Google Cloud → GOOGLE_PLACES_API_KEY" />
-                <Status ok={status.storage === "supabase"} title="Cloud storage (Supabase)" on="On — data survives deploys" off="Saved to .data/leadget.json on this computer. Required before deploying: SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY" />
-                <Status ok={status.passcode} title="Passcode lock" on="On" off="Off — anyone with the URL can open it. Set APP_PASSCODE before deploying." warn />
+                <Status ok={status.ai} title="AI pitches (Groq)" on={`On · ${status.model}`} off="Off: pitches use the playbook writer. Free key at console.groq.com → GROQ_API_KEY" />
+                <Status ok={status.google} title="Google Places search" on="On: best business data" off="Off: using OpenStreetMap. Enable “Places API (New)” in Google Cloud → GOOGLE_PLACES_API_KEY" />
+                <Status ok={status.storage === "supabase"} title="Cloud storage (Supabase)" on="On: data survives deploys" off="Saved to .data/leadget.json on this computer. Required before deploying: SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY" />
+                <Status ok={status.passcode} title="Passcode lock" on="On" off="Off: anyone with the URL can open it. Set APP_PASSCODE before deploying." warn />
               </ul>
             </>
           )}

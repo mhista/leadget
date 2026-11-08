@@ -210,7 +210,7 @@ async function auditOne(p: Prospect) {
   const next = await st.updateProspect(p.id, patch);
   await st.addActivity({
     prospect_id: p.id, type: "audit",
-    body: audit.reachable ? `Website audited — ${audit.issues.length} issue${audit.issues.length === 1 ? "" : "s"} found` : "Website audit — site didn't load",
+    body: audit.reachable ? `Website audited, ${audit.issues.length} issue${audit.issues.length === 1 ? "" : "s"} found` : "Website audit, site didn't load",
   });
   return next;
 }
@@ -219,7 +219,7 @@ export async function runAudit(id: string): Promise<Result<Prospect>> {
   try {
     const p = await (await store()).getProspect(id);
     if (!p) return { ok: false, error: "Prospect not found." };
-    if (!p.website) return { ok: false, error: "Add a website first — or pitch them one, since they don't have it." };
+    if (!p.website) return { ok: false, error: "Add a website first, or pitch them one, since they don't have it." };
     await meter("audits");
     const next = await auditOne(p);
     refresh();
@@ -483,7 +483,7 @@ export async function prepareReport(id: string, withSpeed = true): Promise<Resul
     const st = await store();
     let p = await st.getProspect(id);
     if (!p) return { ok: false, error: "Prospect not found." };
-    if (!p.website) return { ok: false, error: "They have no website to report on — make them a mock-up instead." };
+    if (!p.website) return { ok: false, error: "They have no website to report on, make them a mock-up instead." };
     let warning: string | undefined;
     if (!p.audit) {
       await meter("audits");

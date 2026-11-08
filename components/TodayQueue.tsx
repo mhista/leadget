@@ -87,7 +87,7 @@ export function TodayQueue({
     start(async () => {
       const r = await runAudit(p.id);
       if (!r.ok) return toast(r.error, "error");
-      toast(`Audit done — ${r.data.audit?.issues.length ?? 0} issues.`);
+      toast(`Audit done, ${r.data.audit?.issues.length ?? 0} issues.`);
       router.refresh();
     });
   }
@@ -131,7 +131,7 @@ export function TodayQueue({
         <div className="grain rounded-xl border border-dashed border-line-strong px-6 py-16 text-center animate-rise">
           <p className="display text-[2.2rem]">{sent >= goal ? "Goal hit. Nice work." : "That's the queue."}</p>
           <p className="mx-auto mt-2 max-w-[46ch] text-[13.5px] text-muted">
-            {sent} message{sent === 1 ? "" : "s"} sent today{sent >= goal ? "" : ` — ${goal - sent} short of your goal. Add a fresh market to keep going`}.
+            {sent} message{sent === 1 ? "" : "s"} sent today{sent >= goal ? "" : `, ${goal - sent} short of your goal. Add a fresh market to keep going`}.
           </p>
           <div className="mt-6 flex justify-center gap-2">
             <button onClick={() => setI(0)} className={btn("secondary")}><IconArrowLeft /> Back to the start</button>
@@ -154,7 +154,7 @@ export function TodayQueue({
         {list.map((x, n) => {
           const q = byId.get(x.id)!;
           return (
-            <button key={x.id} onClick={() => setI(n)} title={`${q.name} — ${x.label}`}
+            <button key={x.id} onClick={() => setI(n)} title={`${q.name}, ${x.label}`}
               className={clsx("relative shrink-0 rounded-md transition", n === i ? "ring-2 ring-ink ring-offset-2 ring-offset-page" : "opacity-60 hover:opacity-100")}>
               <Favicon website={q.website} name={q.name} size={30} />
               {done.has(x.id) && <span className="absolute -right-1 -top-1 grid h-4 w-4 place-items-center rounded-full bg-success text-white"><IconCheck className="h-2.5 w-2.5" /></span>}
@@ -208,8 +208,8 @@ export function TodayQueue({
                     ))}
                     {issues.length > 4 && <li className="text-[12px] text-muted">+{issues.length - 4} more</li>}
                   </ul>
-                ) : <p className="mt-2 text-[12.5px] text-success">Looks fine — pitch a new feature, not a fix.</p>
-              ) : <p className="mt-2 text-[12.5px] text-muted">Audit it first — you'll open with something true about their business.</p>}
+                ) : <p className="mt-2 text-[12.5px] text-success">Looks fine: pitch a new feature, not a fix.</p>
+              ) : <p className="mt-2 text-[12.5px] text-muted">Audit it first. You'll open with something true about their business.</p>}
             </div>
           )}
         </aside>

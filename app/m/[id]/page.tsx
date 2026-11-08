@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const found = await loadShared((await params).id);
-  return { title: { absolute: found ? `${found.p.name} — website preview` : "Preview" }, robots: { index: false, follow: false } };
+  return { title: { absolute: found ? `${found.p.name}, website preview` : "Preview" }, robots: { index: false, follow: false } };
 }
 
 export default async function MockupPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ preview?: string }> }) {
