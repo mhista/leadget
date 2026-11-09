@@ -143,6 +143,9 @@ export type Audit = {
   https: boolean;
   title?: string;
   description?: string;
+  /** Photos on their current site (share image first), for the mock-up. */
+  images?: string[];
+  logo?: string;
   mobile_ready: boolean;
   platform?: string;
   copyright_year?: number;
@@ -212,6 +215,8 @@ export type Mockup = {
   highlights: string[];
   theme: string;
   cta: "whatsapp" | "call" | "email";
+  /** Pictures for the page: the big one at the top, a few more further down, and their logo. */
+  images?: { hero?: string; gallery?: string[]; logo?: string };
   updated_at: string;
 };
 

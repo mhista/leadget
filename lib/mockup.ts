@@ -10,6 +10,8 @@ import type { Mockup, MockupService, Prospect } from "@/lib/types";
  * is left out rather than invented. Everything is editable before you share.
  */
 
+export type Layout = "editorial" | "visual" | "care" | "works";
+
 export type Theme = {
   id: string;
   name: string;
@@ -17,30 +19,72 @@ export type Theme = {
   accent: string; accentInk: string;
   hero: string; heroInk: string; heroMuted: string;
   display: string; // font family for headings
+  body: string; // font family for text
+  /** Google Fonts stylesheet for the two families. */
+  fonts: string;
+  /** How the page is put together: words first, pictures first, tasks first, or bold and industrial. */
+  layout: Layout;
+  /** Corner radius for photos and panels (px). */
+  radius: number;
 };
 
+const gf = (q: string) => `https://fonts.googleapis.com/css2?${q}&display=swap`;
+
+/**
+ * Seven looks, each made for a kind of business rather than one template in
+ * different colours: a law firm reads as considered and quiet, a restaurant
+ * leads with the food, a clinic puts booking first, a logistics company
+ * looks strong and practical.
+ */
 export const THEMES: Theme[] = [
-  { id: "forest", name: "Forest", bg: "#F6F4EE", surface: "#FFFFFF", ink: "#14201A", muted: "#5B665F", line: "#E3E0D6",
-    accent: "#1F6B4A", accentInk: "#FFFFFF", hero: "#10231A", heroInk: "#F3F1E9", heroMuted: "#A8B7AE", display: "Fraunces, Georgia, serif" },
-  { id: "noir", name: "Noir & gold", bg: "#F7F5F0", surface: "#FFFFFF", ink: "#161412", muted: "#6A645C", line: "#E6E1D8",
-    accent: "#B08A3E", accentInk: "#161412", hero: "#141210", heroInk: "#F5EFE3", heroMuted: "#B3A993", display: "Fraunces, Georgia, serif" },
-  { id: "ocean", name: "Ocean", bg: "#F3F7FA", surface: "#FFFFFF", ink: "#0E1B2B", muted: "#566476", line: "#DDE6EE",
-    accent: "#1C64D1", accentInk: "#FFFFFF", hero: "#0B2242", heroInk: "#EEF4FC", heroMuted: "#9FB3CF", display: "'Instrument Sans', Inter, system-ui, sans-serif" },
-  { id: "mint", name: "Mint", bg: "#F2F8F6", surface: "#FFFFFF", ink: "#0F2320", muted: "#55706A", line: "#D9E9E4",
-    accent: "#0E9F7E", accentInk: "#FFFFFF", hero: "#0B3A33", heroInk: "#ECFAF6", heroMuted: "#9CC7BD", display: "'Instrument Sans', Inter, system-ui, sans-serif" },
-  { id: "ember", name: "Ember", bg: "#FBF5F0", surface: "#FFFFFF", ink: "#2A1610", muted: "#7A5E54", line: "#EFE1D8",
-    accent: "#D2542C", accentInk: "#FFFFFF", hero: "#2B130C", heroInk: "#FCEFE7", heroMuted: "#D4AE9E", display: "Fraunces, Georgia, serif" },
-  { id: "plum", name: "Plum", bg: "#F7F4FB", surface: "#FFFFFF", ink: "#1D1330", muted: "#665C78", line: "#E6DFF0",
-    accent: "#6D3FD6", accentInk: "#FFFFFF", hero: "#1B0F36", heroInk: "#F3EEFE", heroMuted: "#B2A4D2", display: "Fraunces, Georgia, serif" },
+  { id: "counsel", name: "Counsel (law, finance)", layout: "editorial", radius: 2,
+    bg: "#F3F4F1", surface: "#FFFFFF", ink: "#142030", muted: "#5A6472", line: "#D8DCDE",
+    accent: "#8A2E2A", accentInk: "#FFFFFF", hero: "#142030", heroInk: "#F3F4F1", heroMuted: "#A9B3C0",
+    display: "'Newsreader', Georgia, serif", body: "'Public Sans', system-ui, sans-serif",
+    fonts: gf("family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Public+Sans:wght@400;500;600") },
+  { id: "estate", name: "Estate (property)", layout: "visual", radius: 6,
+    bg: "#EDF0EC", surface: "#FFFFFF", ink: "#13261E", muted: "#55665D", line: "#D3DBD5",
+    accent: "#A6762C", accentInk: "#FFFFFF", hero: "#16302A", heroInk: "#F1F3EE", heroMuted: "#A9BCB2",
+    display: "'Schibsted Grotesk', system-ui, sans-serif", body: "'Schibsted Grotesk', system-ui, sans-serif",
+    fonts: gf("family=Schibsted+Grotesk:wght@400;500;600;700") },
+  { id: "care", name: "Care (clinic, dental, pharmacy)", layout: "care", radius: 18,
+    bg: "#F1F7F7", surface: "#FFFFFF", ink: "#0D2A2E", muted: "#4F6B6E", line: "#D3E5E4",
+    accent: "#0A7772", accentInk: "#FFFFFF", hero: "#DDEFED", heroInk: "#0D2A2E", heroMuted: "#3F5E61",
+    display: "'Figtree', system-ui, sans-serif", body: "'Figtree', system-ui, sans-serif",
+    fonts: gf("family=Figtree:wght@400;500;600;700;800") },
+  { id: "table", name: "Table (food, hotels)", layout: "visual", radius: 4,
+    bg: "#F5F0EA", surface: "#FFFDFB", ink: "#2A1A1D", muted: "#6E5A5C", line: "#E4D9D0",
+    accent: "#C9822B", accentInk: "#21130F", hero: "#2B171C", heroInk: "#F7EEE4", heroMuted: "#C7B1A6",
+    display: "'Fraunces', Georgia, serif", body: "'Karla', system-ui, sans-serif",
+    fonts: gf("family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Karla:wght@400;500;600") },
+  { id: "works", name: "Works (logistics, construction)", layout: "works", radius: 0,
+    bg: "#F1F1EE", surface: "#FFFFFF", ink: "#1B1E21", muted: "#5D6268", line: "#D6D7D3",
+    accent: "#E8631A", accentInk: "#FFFFFF", hero: "#1E2226", heroInk: "#F4F4F1", heroMuted: "#A7ADB3",
+    display: "'Archivo', system-ui, sans-serif", body: "'Archivo', system-ui, sans-serif",
+    fonts: gf("family=Archivo:wdth,wght@62..125,400;62..125,600;62..125,800") },
+  { id: "studio", name: "Studio (salons, gyms, shops)", layout: "visual", radius: 28,
+    bg: "#FAF7FB", surface: "#FFFFFF", ink: "#1D1424", muted: "#665B6E", line: "#E8DFEC",
+    accent: "#B4235E", accentInk: "#FFFFFF", hero: "#241A2B", heroInk: "#FBF4F8", heroMuted: "#C3B1C9",
+    display: "'Bricolage Grotesque', system-ui, sans-serif", body: "'Bricolage Grotesque', system-ui, sans-serif",
+    fonts: gf("family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700") },
+  { id: "community", name: "Community (schools, churches)", layout: "editorial", radius: 10,
+    bg: "#F4F6FB", surface: "#FFFFFF", ink: "#16223F", muted: "#566179", line: "#DAE0EC",
+    accent: "#2B59D1", accentInk: "#FFFFFF", hero: "#16223F", heroInk: "#F4F6FB", heroMuted: "#A9B6D4",
+    display: "'Literata', Georgia, serif", body: "'Atkinson Hyperlegible', system-ui, sans-serif",
+    fonts: gf("family=Literata:opsz,wght@7..72,400;7..72,600&family=Atkinson+Hyperlegible:wght@400;700") },
 ];
 
+/** Looks saved before the redesign map to their closest new one. */
+const OLD: Record<string, string> = { forest: "estate", noir: "counsel", ocean: "care", mint: "care", ember: "table", plum: "community" };
+
 export const THEME = Object.fromEntries(THEMES.map((t) => [t.id, t])) as Record<string, Theme>;
+export const themeFor = (id: string) => THEME[id] ?? THEME[OLD[id] ?? ""] ?? THEMES[0];
 
 type Copy = { headline: string; tagline: string; about: string; services: MockupService[]; highlights: string[]; theme: string };
 
 const COPY: Record<string, Copy> = {
   "real-estate": {
-    theme: "forest",
+    theme: "estate",
     headline: "Find your next home in {city}",
     tagline: "Browse available properties, book a viewing, and talk to our team on WhatsApp, all in one place.",
     about: "{name} helps buyers, renters and investors find the right property in {city}, with honest advice at every step.",
@@ -53,7 +97,7 @@ const COPY: Record<string, Copy> = {
     highlights: ["Verified listings", "Viewings within 48 hours", "Replies on WhatsApp in minutes"],
   },
   pharmacy: {
-    theme: "mint",
+    theme: "care",
     headline: "Your neighbourhood pharmacy in {city}",
     tagline: "Order your medicines online, check what's in stock, and get refill reminders, without the phone calls.",
     about: "{name} is a trusted pharmacy serving {city}, with licensed pharmacists ready to help with prescriptions and advice.",
@@ -66,7 +110,7 @@ const COPY: Record<string, Copy> = {
     highlights: ["Licensed pharmacists", "Genuine medicines", "Order on WhatsApp"],
   },
   law: {
-    theme: "noir",
+    theme: "counsel",
     headline: "Clear legal advice. Serious representation.",
     tagline: "Tell us about your matter in two minutes and a lawyer will get back to you.",
     about: "{name} advises individuals and businesses in {city} with the care and discretion your matter deserves.",
@@ -79,7 +123,7 @@ const COPY: Record<string, Copy> = {
     highlights: ["Confidential first consultation", "Clear fees before we start", "Responsive, senior attention"],
   },
   clinic: {
-    theme: "ocean",
+    theme: "care",
     headline: "Care you can book in minutes",
     tagline: "See a doctor at {name}. Book online, get reminders and skip the phone queue.",
     about: "{name} provides trusted medical care to families in {city}.",
@@ -92,7 +136,7 @@ const COPY: Record<string, Copy> = {
     highlights: ["Book online 24/7", "Reminders by WhatsApp", "Experienced medical team"],
   },
   dental: {
-    theme: "ocean",
+    theme: "care",
     headline: "A healthier smile, booked in a minute",
     tagline: "Check-ups, cleaning and cosmetic treatments at {name}. Book online.",
     about: "{name} offers gentle, modern dental care in {city}.",
@@ -105,7 +149,7 @@ const COPY: Record<string, Copy> = {
     highlights: ["Online booking", "Recall reminders", "Gentle, modern care"],
   },
   restaurant: {
-    theme: "ember",
+    theme: "table",
     headline: "Order from {name}, direct",
     tagline: "See the full menu, order for pickup or delivery, and book a table, straight from us.",
     about: "{name} serves {city} with food made the way it should be.",
@@ -118,7 +162,7 @@ const COPY: Record<string, Copy> = {
     highlights: ["Order direct", "Fresh every day", "Table bookings online"],
   },
   hotel: {
-    theme: "noir",
+    theme: "table",
     headline: "Stay at {name}",
     tagline: "Book directly for the best rate. See the rooms, check availability and confirm in minutes.",
     about: "{name} welcomes guests to {city} with comfortable rooms and warm service.",
@@ -131,7 +175,7 @@ const COPY: Record<string, Copy> = {
     highlights: ["Best rate when you book direct", "Instant confirmation", "Help on WhatsApp"],
   },
   school: {
-    theme: "plum",
+    theme: "community",
     headline: "Where every child is known",
     tagline: "Discover {name}, book a school tour, and apply for admission online.",
     about: "{name} gives children in {city} a strong start, with caring teachers and a rounded education.",
@@ -144,7 +188,7 @@ const COPY: Record<string, Copy> = {
     highlights: ["Online admissions", "Small class sizes", "Parents kept informed"],
   },
   logistics: {
-    theme: "ocean",
+    theme: "works",
     headline: "Deliveries you can track",
     tagline: "Get an instant quote, book a pickup, and follow your package every step of the way.",
     about: "{name} moves packages and freight across {city} and beyond, on time.",
@@ -157,7 +201,7 @@ const COPY: Record<string, Copy> = {
     highlights: ["Live tracking", "Instant quotes", "Reliable riders"],
   },
   salon: {
-    theme: "ember",
+    theme: "studio",
     headline: "Look good, book easy",
     tagline: "See our work, pick a style and book your appointment at {name} online.",
     about: "{name} is {city}'s go-to for hair, beauty and a good time in the chair.",
@@ -170,7 +214,7 @@ const COPY: Record<string, Copy> = {
     highlights: ["Online booking", "Reminders", "See our portfolio"],
   },
   gym: {
-    theme: "mint",
+    theme: "studio",
     headline: "Get stronger at {name}",
     tagline: "Join online, book classes, and keep your membership in your pocket.",
     about: "{name} is a friendly, well-equipped gym in {city}.",
@@ -183,7 +227,7 @@ const COPY: Record<string, Copy> = {
     highlights: ["Join online", "Class booking", "Friendly coaches"],
   },
   retail: {
-    theme: "ember",
+    theme: "studio",
     headline: "Shop {name} online",
     tagline: "Browse what's in store, order for delivery, and get updates on new arrivals.",
     about: "{name} brings great products to customers in {city}, now online too.",
@@ -196,7 +240,7 @@ const COPY: Record<string, Copy> = {
     highlights: ["Secure payments", "Fast delivery", "Real customer service"],
   },
   finance: {
-    theme: "ocean",
+    theme: "counsel",
     headline: "Banking that fits your day",
     tagline: "Open an account online, check your balance, and get help when you need it.",
     about: "{name} serves customers and businesses in {city}.",
@@ -209,7 +253,7 @@ const COPY: Record<string, Copy> = {
     highlights: ["Online onboarding", "Clear terms", "Responsive support"],
   },
   construction: {
-    theme: "forest",
+    theme: "works",
     headline: "Built properly. Delivered on time.",
     tagline: "See our projects, reserve an off-plan unit, and follow progress online.",
     about: "{name} designs and builds in {city}, from homes to commercial developments.",
@@ -222,7 +266,7 @@ const COPY: Record<string, Copy> = {
     highlights: ["Proven projects", "Flexible payment plans", "Transparent progress"],
   },
   church: {
-    theme: "plum",
+    theme: "community",
     headline: "Welcome home",
     tagline: "Service times, sermons and events at {name}. You can give online too.",
     about: "{name} is a community of faith in {city}. Everyone is welcome.",
@@ -235,7 +279,7 @@ const COPY: Record<string, Copy> = {
     highlights: ["Everyone welcome", "Sermons online", "Give online"],
   },
   startup: {
-    theme: "plum",
+    theme: "studio",
     headline: "{name}",
     tagline: "[One line on what the product does and who it's for.]",
     about: "{name} is building [what] for [who].",
@@ -247,7 +291,7 @@ const COPY: Record<string, Copy> = {
     highlights: ["iOS & Android", "Join the waitlist", "Built in {city}"],
   },
   other: {
-    theme: "forest",
+    theme: "estate",
     headline: "{name}",
     tagline: "Everything you need to know about {name}, and a quick way to get in touch.",
     about: "{name} serves customers in {city}.",
@@ -272,6 +316,8 @@ export function defaultMockup(p: Prospect): Mockup {
     highlights: c.highlights.map((h) => fill(h, p)),
     theme: c.theme,
     cta: p.phone ? "whatsapp" : p.email ? "email" : "call",
+    // Their own pictures from their current site, when the audit found some.
+    images: { hero: p.audit?.images?.[0], gallery: p.audit?.images?.slice(1, 5) ?? [], logo: p.audit?.logo },
     updated_at: new Date().toISOString(),
   };
 }

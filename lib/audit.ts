@@ -42,6 +42,32 @@ const SOCIALS: [RegExp, string][] = [
   [/https?:\/\/(www\.)?youtube\.com\/[^"'\s<>]+/gi, "YouTube"],
 ];
 
+/**
+ * Their own pictures, for the mock-up: the share image, then the larger
+ * photos on the homepage (no icons, sprites or tracking pixels), and the
+ * logo if one is marked as such. Absolute URLs only.
+ */
+function pictures(html: string, base: string): { images: string[]; logo?: string } {
+  const abs = (u?: string) => { if (!u || u.startsWith("data:")) return null; try { const x = new URL(u.replace(/&amp;/g, "&"), base); return /^https?:$/.test(x.protocol) ? x.href : null; } catch { return null; } };
+  const out: string[] = [];
+  const add = (u: string | null) => { if (u && !out.includes(u) && out.length < 8) out.push(u); };
+  add(abs(pick(html, /<meta[^>]+property=["']og:image(?::url)?["'][^>]*content=["']([^"']+)["']/i) ?? pick(html, /<meta[^>]+content=["']([^"']+)["'][^>]*property=["']og:image["']/i)));
+  let logo: string | undefined;
+  for (const m of html.matchAll(/<img\b[^>]*>/gi)) {
+    const tag = m[0];
+    const src = pick(tag, /\s(?:data-src|data-lazy-src|src)=["']([^"']+)["']/i) ?? pick(tag, /\ssrcset=["']([^"'\s,]+)/i);
+    const u = abs(src);
+    if (!u) continue;
+    const hint = `${tag} ${u}`.toLowerCase();
+    if (/logo/.test(hint)) { logo ??= u; continue; }
+    if (/\.svg(\?|$)|icon|sprite|pixel|spacer|avatar|badge|flag|payment|gravatar|facebook\.com\/tr|1x1/.test(hint)) continue;
+    const w = Number(pick(tag, /\swidth=["']?(\d+)/i) ?? 0), h = Number(pick(tag, /\sheight=["']?(\d+)/i) ?? 0);
+    if ((w && w < 280) || (h && h < 180)) continue;
+    add(u);
+  }
+  return { images: out, logo };
+}
+
 const pick = (html: string, re: RegExp) => html.match(re)?.[1]?.replace(/\s+/g, " ").trim();
 
 function decode(s?: string) {
@@ -196,6 +222,7 @@ export async function auditWebsite(input: string, opts: { name?: string } = {}):
   };
 
   for (const [re, name] of PLATFORMS) if (re.test(html)) { a.platform = name; break; }
+  Object.assign(a, pictures(html, final));
 
   const years = [...html.matchAll(/(?:©|&copy;|copyright)\s*(?:\d{4}\s*[-–]\s*)?(\d{4})/gi)].map((m) => +m[1]).filter((y) => y > 1995 && y < 2100);
   if (years.length) a.copyright_year = Math.max(...years);

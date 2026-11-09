@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import { prepareReport, runSpeedTest } from "@/lib/actions";
 import type { Prospect, Settings } from "@/lib/types";
-import { THEME } from "@/lib/mockup";
+import { themeFor } from "@/lib/mockup";
 import { btn, ago } from "@/components/ui";
 import { Spinner } from "@/components/controls";
 import { useToast } from "@/components/Toast";
@@ -62,7 +62,7 @@ export function SharePanel({ p, settings }: { p: Prospect; settings: Settings })
   }
 
   const ps = p.audit?.pagespeed;
-  const theme = p.mockup ? THEME[p.mockup.theme] : null;
+  const theme = p.mockup ? themeFor(p.mockup.theme) : null;
 
   return (
     <section className="card overflow-hidden animate-rise [animation-delay:40ms]">

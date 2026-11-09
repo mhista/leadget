@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import clsx from "clsx";
 import { saveMockup } from "@/lib/actions";
 import type { Mockup, Prospect, Settings } from "@/lib/types";
-import { THEMES, defaultMockup } from "@/lib/mockup";
+import { THEMES, defaultMockup, themeFor } from "@/lib/mockup";
 import { MockupSite } from "@/components/MockupSite";
 import { Field, btn, inputCls } from "@/components/ui";
 import { Spinner } from "@/components/controls";
@@ -18,7 +18,10 @@ import { IconPlus, IconRefresh, IconTrash, IconX } from "@/components/icons";
  */
 export function MockupEditor({ p, settings, onClose, onSaved }: { p: Prospect; settings: Settings; onClose: () => void; onSaved: (shareId: string) => void }) {
   const toast = useToast();
-  const [m, setM] = useState<Mockup>(p.mockup ?? defaultMockup(p));
+  const [m, setM] = useState<Mockup>(() => {
+    const x = p.mockup ?? defaultMockup(p);
+    return { ...x, theme: themeFor(x.theme).id };
+  });
   const [saving, start] = useTransition();
   const frame = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.5);
@@ -69,7 +72,7 @@ export function MockupEditor({ p, settings, onClose, onSaved }: { p: Prospect; s
         <div className="min-h-0 space-y-5 overflow-y-auto border-r border-line bg-surface p-5 scroll-thin">
           <div>
             <p className="mb-2 text-[12px] font-medium">Theme</p>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               {THEMES.map((t) => (
                 <button key={t.id} onClick={() => set("theme", t.id)}
                   className={clsx("overflow-hidden rounded-lg border-2 text-left transition", m.theme === t.id ? "border-ink" : "border-transparent hover:border-line-strong")}>
@@ -83,6 +86,17 @@ export function MockupEditor({ p, settings, onClose, onSaved }: { p: Prospect; s
               ))}
             </div>
           </div>
+          <Field label="Big picture" hint="A photo of their business, from their website or anywhere you have one. Leave empty for a text-only top.">
+            <input className={inputCls} value={m.images?.hero ?? ""} placeholder="Paste a picture link" onChange={(e) => set("images", { ...(m.images ?? {}), hero: e.target.value.trim() })} />
+            {(p.audit?.images ?? []).length > 0 && (
+              <span className="mt-2 flex flex-wrap gap-2">
+                {(p.audit?.images ?? []).map((u) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <button key={u} type="button" onClick={() => set("images", { ...(m.images ?? {}), hero: u })} className={clsx("h-12 w-12 overflow-hidden rounded-md border-2", m.images?.hero === u ? "border-ink" : "border-line")} title="Use this one"><img src={u} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" /></button>
+                ))}
+              </span>
+            )}
+          </Field>
           <Field label="Headline"><input className={inputCls} value={m.headline} onChange={(e) => set("headline", e.target.value)} /></Field>
           <Field label="Tagline"><textarea rows={3} className={inputCls} value={m.tagline} onChange={(e) => set("tagline", e.target.value)} /></Field>
           <Field label="Main button">
