@@ -132,7 +132,7 @@ export function FilterRail({
       <Section title="Source & date added" active={f.sources.length > 0 || f.added !== "any"} onClear={() => set({ ...f, sources: [], added: "any" })}>
         {sources.map((s) => (
           <Opt key={s} checked={f.sources.includes(s)} onChange={() => toggle("sources", s)} n={countWith({ sources: [s] })}>
-            {{ google: "Google Maps", osm: "OpenStreetMap", csv: "CSV import", manual: "Added by hand" }[s]}
+            {{ google: "Google Maps", osm: "OpenStreetMap", csv: "CSV import", manual: "Added by hand", enquiry: "Website enquiry" }[s]}
           </Opt>
         ))}
         <select className={clsx(selectCls, "mt-2 h-8 py-0 text-[12.5px]")} value={f.added} onChange={(e) => up("added", e.target.value as AddedFilter)}>

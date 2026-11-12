@@ -39,7 +39,7 @@ export const SIZES: { id: Size; label: string }[] = [
   { id: "enterprise", label: "Enterprise / 1,000+" },
 ];
 
-export type Source = "manual" | "osm" | "google" | "csv";
+export type Source = "manual" | "osm" | "google" | "csv" | "enquiry";
 
 export type AuditIssue = {
   id: string;
