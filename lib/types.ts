@@ -185,6 +185,8 @@ export type Prospect = {
   stage: Stage;
   score: number;
   deal_value: number | null;
+  /** Currency of deal_value (e.g. "NGN"). Empty: the team's default currency. */
+  currency?: string | null;
   tags: string[];
   notes: string;
   audit: Audit | null;
