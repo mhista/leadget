@@ -1,5 +1,6 @@
 import type { Prospect } from "@/lib/types";
 import { SWIPE, type Swipe } from "@/lib/swipe";
+import { opportunities } from "@/lib/opportunities";
 
 /**
  * Which angle to use on this lead, right now.
@@ -37,6 +38,10 @@ export function suggestAngles(p: Prospect, touches = 0, limit = 3): Suggestion[]
   else if (touches === 1) { add("bump-short", "Touch #2: a one-line bump in the same thread"); add("quick-win", "Or give a tip they can use today"); }
 
   // Openers.
+  // Beyond the website: when an app or the brand is the stronger case, lead with it.
+  const [best] = opportunities(p);
+  if (touches === 0 && best?.service === "app") add("app-gap", best.title);
+  if (touches === 0 && best?.service === "branding") add("brand-refresh", best.title);
   const issues = p.audit?.issues ?? [];
   const high = issues.filter((i) => i.severity === "high").length;
   if (touches === 0 && p.mockup) add(p.phone && !p.email ? "wa-mockup-link" : "mockup-link", "Your mock-up is ready: send the link");

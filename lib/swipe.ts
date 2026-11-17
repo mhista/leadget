@@ -14,6 +14,7 @@
  */
 
 export type SwipeCategory =
+  | "Mobile app" | "Branding"
   | "No website" | "Audit" | "Observation" | "Compliment" | "Curiosity" | "Direct" | "Permission"
   | "Problem-agitate" | "Reframe" | "Value-first" | "Quick win" | "Video" | "Social proof" | "Story"
   | "Peer" | "Local" | "Guarantee" | "Human opener" | "Underdog" | "Founder story" | "Humor" | "Urgency"
@@ -32,6 +33,39 @@ export type Swipe = {
 };
 
 export const SWIPES: Swipe[] = [
+  /* ── Beyond the website ─────────────────────────────────────── */
+  {
+    id: "app-gap", category: "Mobile app", angle: "Their niche runs on apps", step: "opener", channel: "email",
+    guidance: "Their website is fine, but they have no app in a niche where customers use one. Lead with what customers do in apps elsewhere, not with technology.",
+    subject: "an app for {{company}}?",
+    body: `Hi {{first_name}},
+
+{{app_gap}}
+
+In {{industry}}, {{app_use}}. It keeps customers coming back to you rather than to a platform that takes a cut.
+
+We build iOS and Android apps for {{industry}} businesses, once for both stores. If it would help, I can sketch the three screens your customers would use most, free.
+
+Would that be useful?
+
+{{signature}}`,
+  },
+  {
+    id: "brand-refresh", category: "Branding", angle: "Look as established as you are", step: "opener", channel: "email",
+    guidance: "A good business whose brand looks thrown together: a free email address, no logo, a builder template, an old footer. Be kind: they're bigger than they look.",
+    subject: "{{company}} looks smaller online than it is",
+    body: `Hi {{first_name}},
+
+{{brand_gap}}
+
+None of it is a big deal on its own, but together it makes {{company}} look smaller than it is, and people compare businesses before they call.
+
+We design brand identities for {{industry}} businesses: a logo, colours and type used everywhere, from your website and email to signage and socials.
+
+Would a quick look at a couple of directions be useful? No charge for that.
+
+{{signature}}`,
+  },
   /* ── No website ─────────────────────────────────────────────── */
   {
     id: "nosite-mockup", category: "No website", angle: "Offer the mock-up", step: "opener", channel: "email",

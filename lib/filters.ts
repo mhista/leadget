@@ -1,3 +1,4 @@
+import { opportunities, type Service } from "@/lib/opportunities";
 import type { Prospect, Size, Source, Stage } from "@/lib/types";
 
 /**
@@ -25,6 +26,8 @@ export type ProspectFilters = {
   activity: ActivityFilter;
   added: AddedFilter;
   tags: string[];
+  /** What we could sell them (lib/opportunities.ts): website, app, branding. */
+  opportunity?: Service[];
   scoreMin: number;
   ratingMin: number;
   reviewsMin: number;
@@ -85,6 +88,10 @@ export function applyFilters(list: Prospect[], f: ProspectFilters, now = Date.no
     if (f.sources.length && !f.sources.includes(p.source)) return false;
     if (f.website.length && !f.website.some((w) => websiteMatch(p, w))) return false;
     if (f.contact.length && !f.contact.every((c) => contactMatch(p, c))) return false;
+    if (f.opportunity?.length) {
+      const has = new Set(opportunities(p).filter((o) => o.strength >= 30).map((o) => o.service));
+      if (!f.opportunity.some((s) => has.has(s))) return false;
+    }
     if (f.tags.length && !f.tags.some((t) => p.tags.includes(t))) return false;
     if (p.score < f.scoreMin) return false;
     if (f.ratingMin && (p.rating ?? 0) < f.ratingMin) return false;
@@ -116,6 +123,7 @@ export function activeCount(f: ProspectFilters) {
   n += f.ratingMin ? 1 : 0;
   n += f.reviewsMin ? 1 : 0;
   n += f.dealMin ? 1 : 0;
+  n += f.opportunity?.length ? 1 : 0;
   return n;
 }
 
@@ -124,6 +132,8 @@ export const BUILTIN_VIEWS: SavedView[] = [
   { id: "hot", name: "Hot & not contacted", builtin: true, filters: { ...EMPTY_FILTERS, scoreMin: 65, activity: "never" } },
   { id: "nosite", name: "No website", builtin: true, filters: { ...EMPTY_FILTERS, website: ["none"], stages: ["new", "researching"] } },
   { id: "broken", name: "Broken or insecure sites", builtin: true, filters: { ...EMPTY_FILTERS, website: ["down", "insecure", "not_mobile"] } },
+  { id: "app", name: "Could use an app", builtin: true, filters: { ...EMPTY_FILTERS, opportunity: ["app"], stages: ["new", "researching"] } },
+  { id: "brand", name: "Could use branding", builtin: true, filters: { ...EMPTY_FILTERS, opportunity: ["branding"], stages: ["new", "researching"] } },
   { id: "audit", name: "Needs an audit", builtin: true, filters: { ...EMPTY_FILTERS, website: ["unaudited"] } },
   { id: "emailable", name: "Ready to email", builtin: true, filters: { ...EMPTY_FILTERS, contact: ["email"], activity: "never" } },
   { id: "due", name: "Follow-up due", builtin: true, filters: { ...EMPTY_FILTERS, activity: "due" } },

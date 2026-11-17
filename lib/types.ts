@@ -162,6 +162,12 @@ export type Audit = {
   pagespeed?: PageSpeed | null;
   /** 0–100. Higher means more wrong, i.e. more to sell. */
   opportunity: number;
+  /** Their own app, when the site links to one (App Store / Google Play). */
+  apps?: { ios?: string; android?: string };
+  /** Whether the site has a favicon (the little icon on the browser tab). */
+  favicon?: boolean;
+  /** How others in the same niche and city compare, when the finder checked them together. */
+  niche?: { with_app: number; checked: number; where: string };
 };
 
 export type Prospect = {

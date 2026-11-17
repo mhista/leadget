@@ -1,10 +1,12 @@
+import { opportunities, SERVICE_LABEL } from "@/lib/opportunities";
 import type { Prospect } from "@/lib/types";
 
 /**
  * Lead score, 0–100: "how worth my next hour is this business?"
  *
  * Three questions, weighted by how much each one actually decides a sale:
- *   1. Is there something to fix?     (up to 40) — no site, or an audit full of problems
+ *   1. Is there something to sell?    (up to 40) — no site, an audit full of problems,
+ *                                                no app in a niche that uses them, a weak brand
  *   2. Can I reach a decision-maker?  (up to 35) — email, named contact, phone
  *   3. Can they pay?                  (up to 25) — size, reviews, an established presence
  *
@@ -18,15 +20,24 @@ export function scoreProspect(p: Prospect): number {
 export function scoreReasons(p: Prospect): { label: string; points: number }[] {
   const out: { label: string; points: number }[] = [];
 
-  // 1. Opportunity
+  // 1. Opportunity: the strongest thing we could sell them (website, app or branding).
+  const ways: { label: string; points: number }[] = [];
   if (!p.website) {
-    out.push({ label: "No website, the whole build is the opportunity", points: 32 });
+    ways.push({ label: "No website, the whole build is the opportunity", points: 32 });
   } else if (p.audit) {
-    if (!p.audit.reachable) out.push({ label: "Website is down or unreachable", points: 36 });
-    else out.push({ label: `Website audit: ${p.audit.issues.length} issue${p.audit.issues.length === 1 ? "" : "s"}`, points: Math.round(p.audit.opportunity * 0.4) });
+    if (!p.audit.reachable) ways.push({ label: "Website is down or unreachable", points: 36 });
+    else ways.push({ label: `Website audit: ${p.audit.issues.length} issue${p.audit.issues.length === 1 ? "" : "s"}`, points: Math.round(p.audit.opportunity * 0.4) });
   } else {
-    out.push({ label: "Has a website (not audited yet)", points: 12 });
+    ways.push({ label: "Has a website (not audited yet)", points: 12 });
   }
+  for (const o of opportunities(p)) {
+    if (o.service === "website") continue;
+    ways.push({ label: `${SERVICE_LABEL[o.service]}: ${o.title.charAt(0).toLowerCase() + o.title.slice(1)}`, points: Math.round(o.strength * 0.38) });
+  }
+  ways.sort((a, b) => b.points - a.points);
+  if (ways[0]) out.push(ways[0]);
+  // A second real opening (say a dated brand on top of a weak site) is worth a little more.
+  if (ways[1] && ways[1].points >= 15) out.push({ label: `Also: ${ways[1].label.toLowerCase()}`, points: 5 });
 
   // 2. Reachability
   if (p.email) out.push({ label: "Email address", points: 18 });

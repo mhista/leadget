@@ -1,4 +1,5 @@
 import type { Prospect, Settings } from "@/lib/types";
+import { opportunities } from "@/lib/opportunities";
 import { playbook } from "@/lib/industries";
 import { plain } from "@/lib/text";
 
@@ -8,7 +9,7 @@ import { plain } from "@/lib/text";
  */
 
 export const TEMPLATE_VARS = [
-  "first_name", "company", "city", "country", "industry", "website", "issue", "pain", "offer", "hook", "reviews",
+  "first_name", "company", "city", "country", "industry", "website", "issue", "pain", "offer", "hook", "app_gap", "app_use", "brand_gap", "reviews",
   "report_link", "mockup_link", "my_name", "my_business", "booking_link", "signature",
 ];
 
@@ -33,6 +34,8 @@ export function templateVars(p: Prospect, s: Settings): Record<string, string> {
   const pb = playbook(p.industry);
   const top = [...(p.audit?.issues ?? [])].sort((a, b) => rank(a.severity) - rank(b.severity))[0];
   const first = firstName(p.contact_name);
+  const opps = opportunities(p);
+  const app = opps.find((o) => o.service === "app"), brand = opps.find((o) => o.service === "branding");
   return {
     first_name: first || "there",
     company: p.name,
@@ -45,6 +48,10 @@ export function templateVars(p: Prospect, s: Settings): Record<string, string> {
     pain: lower(pb.pains[0]),
     offer: lower(pb.offers[0]),
     hook: pb.hook,
+    // Beyond the website: their app and brand openings (lib/opportunities.ts).
+    app_gap: app?.pitch ?? `More and more ${pb.label.toLowerCase()} customers expect an app of their own.`,
+    app_use: pb.app?.norm ?? "customers can book, order and come back in a couple of taps",
+    brand_gap: brand?.pitch ?? "[what made their brand look smaller than it is]",
     reviews: p.reviews ? String(p.reviews) : "[number of]",
     report_link: p.share_id && p.audit ? `${(s.public_url || "").replace(/\/$/, "")}/r/${p.share_id}` : "[report link: make the report first]",
     mockup_link: p.share_id && p.mockup ? `${(s.public_url || "").replace(/\/$/, "")}/m/${p.share_id}` : "[mock-up link: make the mock-up first]",

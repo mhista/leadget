@@ -222,6 +222,14 @@ export async function auditWebsite(input: string, opts: { name?: string } = {}):
   };
 
   for (const [re, name] of PLATFORMS) if (re.test(html)) { a.platform = name; break; }
+
+  // Their own app, if the site points to one.
+  const ios = pick(html, /(https?:\/\/(?:apps|itunes)\.apple\.com\/[^"'\s<>]*\/app\/[^"'\s<>]+)/i)
+    ?? (pick(html, /<meta[^>]+name=["']apple-itunes-app["'][^>]*content=["'][^"']*app-id=(\d+)/i) ? "App Store" : undefined);
+  const android = pick(html, /(https?:\/\/play\.google\.com\/store\/apps\/details\?id=[\w.]+)/i)
+    ?? (pick(html, /<meta[^>]+name=["']google-play-app["'][^>]*content=["']app-id=([\w.]+)/i) ? "Google Play" : undefined);
+  if (ios || android) a.apps = { ...(ios ? { ios } : {}), ...(android ? { android } : {}) };
+  a.favicon = /<link[^>]+rel=["'][^"']*(?:icon|apple-touch-icon)[^"']*["']/i.test(html);
   Object.assign(a, pictures(html, final));
 
   const years = [...html.matchAll(/(?:©|&copy;|copyright)\s*(?:\d{4}\s*[-–]\s*)?(\d{4})/gi)].map((m) => +m[1]).filter((y) => y > 1995 && y < 2100);

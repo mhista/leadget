@@ -22,6 +22,27 @@ export type Playbook = {
   hook: string;
   /** Typical first project, in USD, to seed a deal value. */
   typical_deal: number;
+  /** How much an app of their own is worth in this niche (2 = customers expect one), and what it's for. */
+  app?: { value: 1 | 2; norm: string };
+};
+
+/** What an app does for each kind of business. Kept apart so the playbooks above stay readable. */
+const APPS: Record<string, Playbook["app"]> = {
+  "real-estate": { value: 1, norm: "buyers save listings and get alerts for new ones in their own app" },
+  pharmacy: { value: 2, norm: "customers reorder, get refill reminders and track delivery in the pharmacy's own app instead of a delivery platform" },
+  clinic: { value: 2, norm: "patients book, see results and message the clinic in an app" },
+  dental: { value: 1, norm: "patients book and get check-up reminders in an app" },
+  restaurant: { value: 2, norm: "regulars order ahead, collect rewards and skip the delivery apps' commission in the restaurant's own app" },
+  hotel: { value: 2, norm: "guests book direct, check in and order room service in the hotel's own app, saving the booking sites' commission" },
+  school: { value: 2, norm: "parents see results, fees, notices and the timetable in a school app" },
+  logistics: { value: 2, norm: "customers book pickups and track every delivery live in an app" },
+  salon: { value: 2, norm: "clients book, rebook and collect loyalty rewards in an app" },
+  gym: { value: 2, norm: "members book classes, manage their membership and track progress in an app" },
+  retail: { value: 2, norm: "shoppers browse, order and get offers in the store's own app" },
+  finance: { value: 2, norm: "customers check balances, apply and get support in an app" },
+  construction: { value: 1, norm: "clients follow progress, photos and payments on their project in an app" },
+  church: { value: 1, norm: "members follow services, give and get notices in a church app" },
+  startup: { value: 2, norm: "the product itself often needs to be in the app stores" },
 };
 
 export const PLAYBOOKS: Playbook[] = [
@@ -249,7 +270,8 @@ export const PLAYBOOKS: Playbook[] = [
 export const PLAYBOOK = Object.fromEntries(PLAYBOOKS.map((p) => [p.id, p])) as Record<string, Playbook>;
 
 export function playbook(id: string | undefined | null): Playbook {
-  return (id && PLAYBOOK[id]) || PLAYBOOK.other;
+  const pb = (id && PLAYBOOK[id]) || PLAYBOOK.other;
+  return pb.app || !APPS[pb.id] ? pb : { ...pb, app: APPS[pb.id] };
 }
 
 export function industryLabel(id: string) {

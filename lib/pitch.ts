@@ -3,6 +3,7 @@ import type { Pitch, Prospect, Settings, Template } from "@/lib/types";
 import { playbook } from "@/lib/industries";
 import { groqChat, groqConfigured, jsonFrom } from "@/lib/ai/groq";
 import { firstName, signOff } from "@/lib/render";
+import { opportunities, SERVICE_LABEL, type Opportunity, type Service } from "@/lib/opportunities";
 
 /**
  * Writes the first message and its follow-ups for one prospect.
@@ -15,13 +16,19 @@ import { firstName, signOff } from "@/lib/render";
  * Groq fails) the playbook writer below does, so there is always a draft.
  */
 
-export async function writePitch(p: Prospect, s: Settings, opts: { angle?: string } = {}): Promise<Pitch & { warning?: string }> {
+export async function writePitch(p: Prospect, s: Settings, opts: { angle?: string; service?: Service } = {}): Promise<Pitch & { warning?: string }> {
   if (groqConfigured()) {
-    const ai = await aiPitch(p, s, opts.angle);
+    const ai = await aiPitch(p, s, opts.angle, opts.service);
     if (ai.ok) return ai.pitch;
-    return { ...plainPitch(playbookPitch(p, s)), warning: `AI draft unavailable (${ai.error}), used the playbook instead.` };
+    return { ...plainPitch(playbookPitch(p, s, opts.service)), warning: `AI draft unavailable (${ai.error}), used the playbook instead.` };
   }
-  return plainPitch(playbookPitch(p, s));
+  return plainPitch(playbookPitch(p, s, opts.service));
+}
+
+/** What to lead with: the service asked for, else the strongest opportunity. */
+export function leadOpportunity(p: Prospect, service?: Service): Opportunity | null {
+  const all = opportunities(p);
+  return (service && all.find((o) => o.service === service)) || all[0] || null;
 }
 
 /** No em or en dashes in anything the lead reads (settings text included). */
@@ -45,15 +52,23 @@ const where = (p: Prospect) => p.city || p.country;
 
 /* ── Playbook writer ─────────────────────────────────────────────────── */
 
-export function playbookPitch(p: Prospect, s: Settings): Pitch {
+export function playbookPitch(p: Prospect, s: Settings, service?: Service): Pitch {
   const { pb, top, first } = facts(p, s);
+  const lead = leadOpportunity(p, service);
   const hi = first ? `Hi ${first},` : s.tone === "formal" ? "Good day," : "Hi there,";
   const me = s.your_name ? `I'm ${s.your_name}${s.business_name ? ` from ${s.business_name}` : ""}` : "I'm a developer";
-  const offer = pb.offers[0].charAt(0).toLowerCase() + pb.offers[0].slice(1);
+  const offerText = lead && lead.service !== "website" ? lead.offer : pb.offers[0];
+  const offer = offerText.charAt(0).toLowerCase() + offerText.slice(1);
 
   let observation: string;
   let subject: string;
-  if (!p.website) {
+  if (lead && lead.service === "app") {
+    observation = lead.pitch.includes(" I looked at ") ? lead.pitch : `I was looking at ${pb.label.toLowerCase()} businesses${where(p) ? ` in ${where(p)}` : ""}. ${lead.pitch}`;
+    subject = `An app for ${p.name}?`;
+  } else if (lead && lead.service === "branding") {
+    observation = `I came across ${p.name}${where(p) ? ` in ${where(p)}` : ""}. ${lead.pitch}`;
+    subject = `${p.name}'s brand`;
+  } else if (!p.website) {
     observation = `I was looking at ${pb.label.toLowerCase()} businesses${where(p) ? ` in ${where(p)}` : ""} and noticed ${p.name} doesn't have a website yet${p.reviews ? `, even though you have ${p.reviews} reviews on Google, so people clearly already look for you` : ""}.`;
     subject = `${p.name}: a website for the people already searching for you`;
   } else if (top.length) {
@@ -74,7 +89,9 @@ export function playbookPitch(p: Prospect, s: Settings): Pitch {
     "",
     observation,
     "",
-    `${me}. I help ${pb.label.toLowerCase()} businesses with ${offer}, ${pb.hook}.${proof}`,
+    lead && lead.service !== "website"
+      ? `${me}. I help ${pb.label.toLowerCase()} businesses with ${offer}.${proof}`
+      : `${me}. I help ${pb.label.toLowerCase()} businesses with ${offer}, ${pb.hook}.${proof}`,
     "",
     cta,
     "",
@@ -86,7 +103,9 @@ export function playbookPitch(p: Prospect, s: Settings): Pitch {
 
   const whatsapp = [
     `${hi.replace(/,$/, "")}, ${s.your_name ? `${s.your_name} here` : "quick message"}.`,
-    !p.website
+    lead && lead.service !== "website"
+      ? `${lead.pitch} I help ${pb.label.toLowerCase()} businesses with ${offer}.`
+      : !p.website
       ? `I noticed ${p.name} doesn't have a website yet. I build ${pb.label.toLowerCase()} sites with ${pb.hook}.`
       : top.length
         ? `I checked ${p.name}'s website: ${top[0].pitch.charAt(0).toLowerCase() + top[0].pitch.slice(1)}`
@@ -117,8 +136,10 @@ export function playbookPitch(p: Prospect, s: Settings): Pitch {
 
 /* ── AI writer ───────────────────────────────────────────────────────── */
 
-async function aiPitch(p: Prospect, s: Settings, angle?: string): Promise<{ ok: true; pitch: Pitch } | { ok: false; error: string }> {
+async function aiPitch(p: Prospect, s: Settings, angle?: string, service?: Service): Promise<{ ok: true; pitch: Pitch } | { ok: false; error: string }> {
   const { pb, issues, first } = facts(p, s);
+  const opps = opportunities(p);
+  const lead = leadOpportunity(p, service);
 
   const context = {
     sender: {
@@ -132,17 +153,21 @@ async function aiPitch(p: Prospect, s: Settings, angle?: string): Promise<{ ok: 
       google_rating: p.rating, google_reviews: p.reviews, size: p.size || null, notes: p.notes || null,
       audit_findings: issues.map((i) => ({ severity: i.severity, finding: i.pitch })),
       platform: p.audit?.platform ?? null,
+      has_own_app: !!p.audit?.apps,
     },
+    opportunities: opps.map((o) => ({ service: SERVICE_LABEL[o.service], what: o.title, evidence: o.why, offer: o.offer, strength: o.strength })),
+    lead_with: lead ? SERVICE_LABEL[lead.service] : null,
     industry_knowledge: { common_pains: pb.pains, offers_that_fit: pb.offers, hook: pb.hook },
     requested_angle: angle || null,
   };
 
-  const system = `You write cold outreach for a freelance software developer. You write like a thoughtful human, not a marketer.
+  const system = `You write cold outreach for a small studio that builds websites, mobile apps and brand identities. You write like a thoughtful human, not a marketer.
 
 Rules:
 - The first email is 70 to 130 words. Plain text. No emojis, no bullet lists, no exclamation marks, no "I hope this finds you well".
-- Open with ONE specific, true observation about this business, taken only from the facts given (audit findings, missing website, reviews). Never invent facts, numbers, clients or results. If the sender gave no proof, don't claim any.
-- Offer ONE relevant fix from offers_that_fit, framed as the outcome for the business.
+- The sender does websites, mobile apps and branding. "opportunities" lists what this business could use, with the evidence for each. Lead with the one named in lead_with: a business with a good website may still need an app or a stronger brand.
+- Open with ONE specific, true observation about this business, taken only from the facts given (audit findings, opportunities' evidence, missing website, reviews). Never invent facts, numbers, competitors, clients or results. If the sender gave no proof, don't claim any.
+- Offer ONE relevant fix (that opportunity's offer, or one from offers_that_fit), framed as the outcome for the business.
 - End with a low-effort call to action (a 15-minute call, or offering a free mock-up). Use the booking link if provided.
 - Sign off with the sender's name and business. Add a final P.S. line telling them to reply "no thanks" and you won't follow up.
 - Match the sender's tone: warm, direct or formal.
