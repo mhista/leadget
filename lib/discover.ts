@@ -83,24 +83,49 @@ const FIELDS = [
   "places.userRatingCount", "places.businessStatus", "places.primaryTypeDisplayName", "nextPageToken",
 ].join(",");
 
+/** Google's own hiccups (busy, briefly down): worth a short wait and another try. */
+const RETRY = new Set([429, 500, 502, 503, 504]);
+const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+async function placesRequest(body: object): Promise<Response> {
+  let last: Response | null = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (attempt) {
+      const after = Number(last?.headers.get("retry-after"));
+      await wait(Number.isFinite(after) && after > 0 ? Math.min(after * 1000, 5000) : attempt * 1500);
+    }
+    try {
+      last = await fetch("https://places.googleapis.com/v1/places:searchText", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Goog-Api-Key": process.env.GOOGLE_PLACES_API_KEY!,
+          "X-Goog-FieldMask": FIELDS,
+        },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(15_000),
+      });
+    } catch (e) {
+      if (attempt === 2) throw new Error(`Couldn’t reach Google Places (${(e as Error).message}). Check the connection and try again.`);
+      continue;
+    }
+    if (last.ok || !RETRY.has(last.status)) return last;
+  }
+  return last!;
+}
+
 async function google(query: string, city: string, country: string): Promise<Found[]> {
   const out: Found[] = [];
   let pageToken: string | undefined;
   for (let page = 0; page < 3; page++) {
-    const res = await fetch("https://places.googleapis.com/v1/places:searchText", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Goog-Api-Key": process.env.GOOGLE_PLACES_API_KEY!,
-        "X-Goog-FieldMask": FIELDS,
-      },
-      body: JSON.stringify({ textQuery: query, pageSize: 20, ...(pageToken ? { pageToken } : {}) }),
-      signal: AbortSignal.timeout(15_000),
-    });
+    const res = await placesRequest({ textQuery: query, pageSize: 20, ...(pageToken ? { pageToken } : {}) });
     if (!res.ok) {
+      // A later page failing shouldn't throw away the results already in hand.
+      if (out.length) break;
       const body = await res.text().catch(() => "");
       if (res.status === 403) throw new Error("Google refused the key. Check that “Places API (New)” is enabled for it and billing is set up.");
       if (res.status === 429) throw new Error("Google's rate limit was hit. Wait a minute and search again.");
+      if (res.status >= 500) throw new Error(`Google Places is having a problem on its side (${res.status}), even after trying three times. It’s usually over within minutes: try again shortly, or search with OpenStreetMap meanwhile.`);
       throw new Error(`Google Places returned ${res.status}. ${body.slice(0, 160)}`);
     }
     const data = await res.json();
