@@ -71,8 +71,10 @@ export function opportunities(p: Prospect): Opportunity[] {
     });
   }
 
-  /* App: only where an app is genuinely useful, and only when we could see the site. */
-  if (pb.app && (live || !p.website) && !a?.apps) {
+  /* App: only where an app is genuinely useful, and only when we could see the site.
+     Audits from before app links were looked for (no `favicon` field) can't say "no app". */
+  const lookedForApps = !p.website || (!!a && a.favicon !== undefined);
+  if (pb.app && (live || !p.website) && lookedForApps && !a?.apps) {
     const n = a?.niche;
     const peers = n && n.checked >= 4 && n.with_app >= 1 ? n : null;
     const why = [
