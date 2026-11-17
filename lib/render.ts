@@ -9,7 +9,7 @@ import { plain } from "@/lib/text";
  */
 
 export const TEMPLATE_VARS = [
-  "first_name", "company", "city", "country", "industry", "website", "issue", "pain", "offer", "hook", "app_gap", "app_use", "brand_gap", "reviews",
+  "first_name", "company", "city", "country", "industry", "website", "issue", "pain", "offer", "hook", "app_gap", "app_use", "brand_gap", "ops_gap", "reviews",
   "report_link", "mockup_link", "my_name", "my_business", "booking_link", "signature",
 ];
 
@@ -35,7 +35,7 @@ export function templateVars(p: Prospect, s: Settings): Record<string, string> {
   const top = [...(p.audit?.issues ?? [])].sort((a, b) => rank(a.severity) - rank(b.severity))[0];
   const first = firstName(p.contact_name);
   const opps = opportunities(p);
-  const app = opps.find((o) => o.service === "app"), brand = opps.find((o) => o.service === "branding");
+  const app = opps.find((o) => o.service === "app"), brand = opps.find((o) => o.service === "branding"), ops = opps.find((o) => o.service === "software");
   return {
     first_name: first || "there",
     company: p.name,
@@ -52,6 +52,7 @@ export function templateVars(p: Prospect, s: Settings): Record<string, string> {
     app_gap: app?.pitch ?? `More and more ${pb.label.toLowerCase()} customers expect an app of their own.`,
     app_use: pb.app?.norm ?? "customers can book, order and come back in a couple of taps",
     brand_gap: brand?.pitch ?? "[what made their brand look smaller than it is]",
+    ops_gap: ops?.pitch ?? `${p.name} looks busy, and I wondered how you keep track of every enquiry.`,
     reviews: p.reviews ? String(p.reviews) : "[number of]",
     report_link: p.share_id && p.audit ? `${(s.public_url || "").replace(/\/$/, "")}/r/${p.share_id}` : "[report link: make the report first]",
     mockup_link: p.share_id && p.mockup ? `${(s.public_url || "").replace(/\/$/, "")}/m/${p.share_id}` : "[mock-up link: make the mock-up first]",

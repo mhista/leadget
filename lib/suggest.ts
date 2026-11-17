@@ -42,6 +42,7 @@ export function suggestAngles(p: Prospect, touches = 0, limit = 3): Suggestion[]
   const [best] = opportunities(p);
   if (touches === 0 && best?.service === "app") add("app-gap", best.title);
   if (touches === 0 && best?.service === "branding") add("brand-refresh", best.title);
+  if (touches === 0 && best?.service === "software") add("ops-system", best.title);
   const issues = p.audit?.issues ?? [];
   const high = issues.filter((i) => i.severity === "high").length;
   if (touches === 0 && p.mockup) add(p.phone && !p.email ? "wa-mockup-link" : "mockup-link", "Your mock-up is ready: send the link");

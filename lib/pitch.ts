@@ -65,6 +65,9 @@ export function playbookPitch(p: Prospect, s: Settings, service?: Service): Pitc
   if (lead && lead.service === "app") {
     observation = lead.pitch.includes(" I looked at ") ? lead.pitch : `I was looking at ${pb.label.toLowerCase()} businesses${where(p) ? ` in ${where(p)}` : ""}. ${lead.pitch}`;
     subject = `An app for ${p.name}?`;
+  } else if (lead && lead.service === "software") {
+    observation = `I came across ${p.name}${where(p) ? ` in ${where(p)}` : ""}. ${lead.pitch}`;
+    subject = `Keeping track of enquiries at ${p.name}`;
   } else if (lead && lead.service === "branding") {
     observation = `I came across ${p.name}${where(p) ? ` in ${where(p)}` : ""}. ${lead.pitch}`;
     subject = `${p.name}'s brand`;
@@ -161,11 +164,11 @@ async function aiPitch(p: Prospect, s: Settings, angle?: string, service?: Servi
     requested_angle: angle || null,
   };
 
-  const system = `You write cold outreach for a small studio that builds websites, mobile apps and brand identities. You write like a thoughtful human, not a marketer.
+  const system = `You write cold outreach for a small studio that builds websites, mobile apps, brand identities and custom CMS/CRM systems with AI. You write like a thoughtful human, not a marketer.
 
 Rules:
 - The first email is 70 to 130 words. Plain text. No emojis, no bullet lists, no exclamation marks, no "I hope this finds you well".
-- The sender does websites, mobile apps and branding. "opportunities" lists what this business could use, with the evidence for each. Lead with the one named in lead_with: a business with a good website may still need an app or a stronger brand.
+- The sender does websites, mobile apps, branding, and custom CMS/CRM systems with AI built in (sorting enquiries, drafting replies, follow-up reminders). "opportunities" lists what this business could use, with the evidence for each. Lead with the one named in lead_with: a business with a good website may still need an app or a stronger brand.
 - Open with ONE specific, true observation about this business, taken only from the facts given (audit findings, opportunities' evidence, missing website, reviews). Never invent facts, numbers, competitors, clients or results. If the sender gave no proof, don't claim any.
 - Offer ONE relevant fix (that opportunity's offer, or one from offers_that_fit), framed as the outcome for the business.
 - End with a low-effort call to action (a 15-minute call, or offering a free mock-up). Use the booking link if provided.

@@ -133,6 +133,7 @@ export const BUILTIN_VIEWS: SavedView[] = [
   { id: "nosite", name: "No website", builtin: true, filters: { ...EMPTY_FILTERS, website: ["none"], stages: ["new", "researching"] } },
   { id: "broken", name: "Broken or insecure sites", builtin: true, filters: { ...EMPTY_FILTERS, website: ["down", "insecure", "not_mobile"] } },
   { id: "app", name: "Could use an app", builtin: true, filters: { ...EMPTY_FILTERS, opportunity: ["app"], stages: ["new", "researching"] } },
+  { id: "systems", name: "Could use a CMS or CRM", builtin: true, filters: { ...EMPTY_FILTERS, opportunity: ["software"], stages: ["new", "researching"] } },
   { id: "brand", name: "Could use branding", builtin: true, filters: { ...EMPTY_FILTERS, opportunity: ["branding"], stages: ["new", "researching"] } },
   { id: "audit", name: "Needs an audit", builtin: true, filters: { ...EMPTY_FILTERS, website: ["unaudited"] } },
   { id: "emailable", name: "Ready to email", builtin: true, filters: { ...EMPTY_FILTERS, contact: ["email"], activity: "never" } },

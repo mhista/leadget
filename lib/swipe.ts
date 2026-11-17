@@ -14,7 +14,7 @@
  */
 
 export type SwipeCategory =
-  | "Mobile app" | "Branding"
+  | "Mobile app" | "Branding" | "CMS & CRM"
   | "No website" | "Audit" | "Observation" | "Compliment" | "Curiosity" | "Direct" | "Permission"
   | "Problem-agitate" | "Reframe" | "Value-first" | "Quick win" | "Video" | "Social proof" | "Story"
   | "Peer" | "Local" | "Guarantee" | "Human opener" | "Underdog" | "Founder story" | "Humor" | "Urgency"
@@ -34,6 +34,22 @@ export type Swipe = {
 
 export const SWIPES: Swipe[] = [
   /* ── Beyond the website ─────────────────────────────────────── */
+  {
+    id: "ops-system", category: "CMS & CRM", angle: "Busy, but run by hand", step: "opener", channel: "email",
+    guidance: "A busy business keeping enquiries, bookings or content by hand (WhatsApp, phone, an old site). Talk about missed follow-ups and time, not software.",
+    subject: "keeping track of enquiries at {{company}}",
+    body: `Hi {{first_name}},
+
+{{ops_gap}}
+
+When enquiries live in WhatsApp chats and someone's memory, a few always slip through, usually the ones that would have paid.
+
+We build simple systems for {{industry}} businesses: every enquiry and booking in one place, content your team can update themselves, and AI that sorts what comes in, drafts replies and reminds you who to follow up.
+
+Could I show you what that would look like for {{company}}? Fifteen minutes.
+
+{{signature}}`,
+  },
   {
     id: "app-gap", category: "Mobile app", angle: "Their niche runs on apps", step: "opener", channel: "email",
     guidance: "Their website is fine, but they have no app in a niche where customers use one. Lead with what customers do in apps elsewhere, not with technology.",
